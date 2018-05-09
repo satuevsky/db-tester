@@ -3,9 +3,9 @@ using DBTesterLib.Data;
 
 namespace DBTesterLib.Db
 {
-    public class MongoDb: IDb
+    public class MySqlDb: IDb
     {
-        public string Name => "MongoDB";
+        public string Name => "MySQL";
 
         public void DeleteMany(string primaryKeyName, object[] primaryKeyValues)
         {

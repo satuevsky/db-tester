@@ -50,6 +50,7 @@
     <Compile Include="src\Data\DataSet.cs" />
     <Compile Include="src\Data\DataType.cs" />
     <Compile Include="src\Db\IDb.cs" />
+    <Compile Include="src\Db\MySqlDb.cs" />
     <Compile Include="src\Db\MongoDb.cs" />
     <Compile Include="src\Db\MongoDbSimulator.cs" />
     <Compile Include="src\Tester\BaseTester.cs" />

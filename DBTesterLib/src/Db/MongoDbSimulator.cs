@@ -4,16 +4,15 @@ using DBTesterLib.Data;
 
 namespace DBTesterLib.Db
 {
-    class MongoDbSimulator: IDb
+    public class MongoDbSimulator: IDb
     {
         public string Name => "MongoDb(Simulator)";
 
 
-        private readonly int _timeout;
+        private int _timeout;
 
-        public MongoDbSimulator(int timeout)
+        public MongoDbSimulator()
         {
-            this._timeout = timeout;
         }
 
 
