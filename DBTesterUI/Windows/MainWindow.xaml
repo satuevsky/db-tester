@@ -6,6 +6,7 @@
         xmlns:wpf="clr-namespace:LoadingIndicators.WPF;assembly=LoadingIndicators.WPF"
         xmlns:oxy="http://oxyplot.org/wpf"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:config="clr-namespace:DBTesterUI.Models"
         xmlns:models1="clr-namespace:DBTesterUI.Graphics.Models"
         mc:Ignorable="d"
         Title="Тестирование" Height="484" Width="800">
@@ -19,23 +20,41 @@
     </Window.Resources>
 
     <Window.DataContext>
-        <models1:TestModel/>
+        <config:DbTestingConfig/>
     </Window.DataContext>
 
     <Grid>
         <TabControl x:Name="TabControl" Margin="0,-24,0,0" SelectedIndex="0">
             <TabItem Header="MainView">
                 <Grid>
-
-                    <Button Content="Начать тест" HorizontalAlignment="Center" VerticalAlignment="Center" Height="36"
-                            Width="137" Foreground="White" BorderBrush="#FF3D638D" Click="Button_Click">
-                        <Button.Background>
-                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                <GradientStop Color="#FF4A76A8" Offset="0" />
-                                <GradientStop Color="#FF5F90C9" Offset="1" />
-                            </LinearGradientBrush>
-                        </Button.Background>
-                    </Button>
+                    <Grid Margin="0,0,0,40" Background="#FFF7F7F7" HorizontalAlignment="Left" Width="250">
+                        <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Выберите системы управления базами данных, которые необходимо протестировать" VerticalAlignment="Top" Width="230" Height="54"/>
+                    </Grid>
+                    <Grid Margin="0,0,0,40" HorizontalAlignment="Right" Width="531">
+                        <TextBlock TextWrapping="Wrap" Text="Выбор СУБД для тестирования" Margin="37,21,37,0" FontSize="16" Foreground="#FF4A76A8" Height="26" VerticalAlignment="Top"/>
+                        <ListView Margin="37,52,37,10" ItemsSource="{Binding DbList}" BorderThickness="0">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding Selected,  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Content="{Binding Db.Name}" Margin="0, 8, 0, 0" Checked="DbListCheckbox_OnChecked" Unchecked="DbListCheckbox_OnChecked"></CheckBox>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListViewItem}">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                <ContentPresenter />
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                        </ListView>
+                    </Grid>
+                    <Grid Height="40" VerticalAlignment="Bottom" Background="#FFF7F7F7">
+                        <Button x:Name="Next1Button"  Content="Далее" Margin="0,8,16,0" VerticalAlignment="Top" Height="24" HorizontalAlignment="Right" Width="75" IsEnabled="{Binding Next1Enabled}"/>
+                    </Grid>
                 </Grid>
             </TabItem>
             <TabItem Header="TestView">
@@ -77,6 +96,9 @@
                     </GroupBox>
                     <GroupBox Header="Подробно" Margin="215,0,10,10">
                         <Grid>
+                            <Grid.DataContext>
+                                <models1:TestModel/>
+                            </Grid.DataContext>
                             <oxy:PlotView Model="{Binding MyModel}" Margin="0,0,22,0"/>
                         </Grid>
                     </GroupBox>

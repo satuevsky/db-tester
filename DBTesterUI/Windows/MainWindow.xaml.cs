@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 
 namespace DBTesterUI.Windows
 {
@@ -21,6 +22,11 @@ namespace DBTesterUI.Windows
         {
 
             TabControl.SelectedIndex = 0;
+        }
+
+        private void DbListCheckbox_OnChecked(object sender, RoutedEventArgs e)
+        {
+            Next1Button.GetBindingExpression(IsEnabledProperty)?.UpdateTarget();
         }
     }
 }
