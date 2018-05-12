@@ -82,10 +82,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Graphics\Models\TestModel.cs" />
-    <Compile Include="Models\DbShards.cs" />
-    <Compile Include="Models\DbTestingConfig.cs" />
-    <Compile Include="Models\DbTestingItem.cs" />
-    <Compile Include="Models\DbTestingModel.cs" />
+    <Compile Include="Models\Config\DbItemsModel.cs" />
+    <Compile Include="Models\Config\DbShardGroupsModel.cs" />
     <Compile Include="Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
