@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Threading;
+using System.Windows;
 using System.Windows.Controls;
 using DBTesterUI.Models.Config;
 
@@ -19,9 +20,12 @@ namespace DBTesterUI.Windows
 
         void UpdateElement(FrameworkElement element)
         {
-            var data = element.DataContext;
-            element.DataContext = null;
-            element.DataContext = data;
+            Dispatcher.Invoke(() =>
+            {
+                var data = element.DataContext;
+                element.DataContext = null;
+                element.DataContext = data;
+            });
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -31,7 +35,6 @@ namespace DBTesterUI.Windows
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-
             TabControl1.SelectedIndex = 0;
         }
 
@@ -66,6 +69,29 @@ namespace DBTesterUI.Windows
         {
             DbShardGroupsModel.RemoveGroup((sender as Button)?.DataContext as DbShardGroup);
             UpdateElement(DefineShardsTab);
+        }
+
+        private void CheckConnectionStringButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if ((sender as FrameworkElement)?.DataContext is DbShardGroupItem item)
+            {
+                if (item.ConnectionStringState == ConnectionStringState.Checking || item.ConnectionString.Trim() == "")
+                {
+                    return;
+                }
+
+                item.ConnectionStringState = ConnectionStringState.Checking;
+                UpdateElement(DefineShardsTab);
+
+                new Thread(() =>
+                {
+                    item.ConnectionStringState = item.Db.CheckConnectionString(item.ConnectionString)
+                        ? ConnectionStringState.Valid
+                        : ConnectionStringState.NotValid;
+
+                    UpdateElement(DefineShardsTab);
+                }).Start();
+            }
         }
     }
 }

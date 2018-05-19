@@ -87,9 +87,12 @@
 
                     <Grid Margin="255,0,0,40">
                         <TextBlock TextWrapping="Wrap" Text="Настройка подключений к базам данных" Margin="37,21,122,0"
-                                   FontSize="16" Foreground="#FF4A76A8" Height="26" VerticalAlignment="Top"/>
+                                   FontSize="16" Foreground="#FF4A76A8" Height="26" VerticalAlignment="Top" />
 
-                        <Button Margin="0,21,38,0" HorizontalAlignment="Right" Width="85" Height="24" VerticalAlignment="Top" BorderThickness="0" Click="AddShardGroupButton_OnClick">Добавить</Button>
+                        <Button Margin="0,21,38,0" HorizontalAlignment="Right" Width="85" Height="24"
+                                VerticalAlignment="Top" BorderThickness="0" Click="AddShardGroupButton_OnClick">
+                            Добавить
+                        </Button>
 
                         <ListView Margin="37,52,37,10" ItemsSource="{Binding ShardGroups}" BorderThickness="0">
                             <ListView.ItemTemplate>
@@ -99,20 +102,33 @@
                                             <TextBlock Text="Количество машин: " Margin="8, 8, 0, 0"
                                                        HorizontalAlignment="Left" Width="124" Height="20"
                                                        VerticalAlignment="Top" TextAlignment="Right" />
-                                            <xctk:IntegerUpDown Value="{Binding MachinesCount, Mode=TwoWay}" Minimum="1"
+                                            <xctk:IntegerUpDown Value="{Binding MachinesCount, Mode=TwoWay}"
+                                                                Minimum="1"
                                                                 Margin="134,8,0,0" Height="20"
-                                                                HorizontalAlignment="Left" VerticalAlignment="Top" Width="40" ValueChanged="MachinesCountUpDown_OnValueChanged"/>
+                                                                HorizontalAlignment="Left" VerticalAlignment="Top"
+                                                                Width="40"
+                                                                ValueChanged="MachinesCountUpDown_OnValueChanged" />
 
-                                            <Button Width="70" Height="20" Margin="0, 8, 33, 8" VerticalAlignment="Top" HorizontalAlignment="Right" BorderThickness="0" Click="DeleteShardGroupButton_OnClick">Удалить</Button>
+                                            <Button Width="75" Height="20" Margin="0, 8, 1, 8" VerticalAlignment="Top"
+                                                    HorizontalAlignment="Right" BorderThickness="0"
+                                                    Click="DeleteShardGroupButton_OnClick">
+                                                Удалить
+                                            </Button>
 
-                                            <ListView ItemsSource="{Binding ShardGroupItems}" Margin="8,32, 0, 0" BorderThickness="0">
+                                            <ListView ItemsSource="{Binding ShardGroupItems}" Margin="8,29, 0, 0"
+                                                      BorderThickness="0">
                                                 <ListView.ItemTemplate>
                                                     <DataTemplate>
                                                         <Grid Margin="0, 8, 0, 0">
-                                                            <TextBlock TextAlignment="Right" Width="120" Height="20" HorizontalAlignment="Left">
-                                                                <Run Text="{Binding Db.Name, Mode=OneWay}"></Run><Run>:</Run>
+                                                            <TextBlock TextAlignment="Right" Width="120" Height="20"
+                                                                       HorizontalAlignment="Left">
+                                                                <Run Text="{Binding Db.Name, Mode=OneWay}" />
+                                                                <Run>:</Run>
                                                             </TextBlock>
-                                                            <TextBox  Margin="125,-4,32,0" Height="20" ></TextBox>
+                                                            <TextBox Margin="125,-4,83,0" Height="20"
+                                                                     Text="{Binding ConnectionString, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                                                     BorderBrush="{Binding ConnectionStringTextColor}"/>
+                                                            <Button HorizontalAlignment="Right" Width="75" Margin="0, -2, 0, 2" BorderThickness="0" Click="CheckConnectionStringButton_OnClick" Content="{Binding ConnectionStringCheckButtonText}"></Button>
                                                         </Grid>
                                                     </DataTemplate>
                                                 </ListView.ItemTemplate>

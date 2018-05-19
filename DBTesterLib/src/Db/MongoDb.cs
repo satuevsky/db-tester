@@ -6,6 +6,16 @@ namespace DBTesterLib.Db
     public class MongoDb: IDb
     {
         public string Name => "MongoDB";
+        
+        public IDb Connect(string connectionString)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool CheckConnectionString(string connectionString)
+        {
+            return false;
+        }
 
         public void DeleteMany(string primaryKeyName, object[] primaryKeyValues)
         {

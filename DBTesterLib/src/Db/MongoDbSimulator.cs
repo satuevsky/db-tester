@@ -7,7 +7,17 @@ namespace DBTesterLib.Db
     public class MongoDbSimulator: IDb
     {
         public string Name => "MongoDb(Simulator)";
+        
+        public IDb Connect(string connectionString)
+        {
+            throw new NotImplementedException();
+        }
 
+        public bool CheckConnectionString(string connectionString)
+        {
+            Thread.Sleep(500);
+            return true;
+        }
 
         private int _timeout;
 

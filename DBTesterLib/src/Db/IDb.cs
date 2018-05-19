@@ -7,6 +7,10 @@ namespace DBTesterLib.Db
     {
         string Name { get; }
 
+        IDb Connect(string connectionString);
+        
+        bool CheckConnectionString(string connectionString);
+
         void Insert(DataSet dataSet);
 
         DataSet SelectOne(string primaryKeyName, object primaryKeyValue);

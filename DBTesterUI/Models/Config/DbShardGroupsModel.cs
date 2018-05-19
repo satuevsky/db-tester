@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Media;
 using DBTesterLib.Db;
 
 namespace DBTesterUI.Models.Config
@@ -17,6 +18,42 @@ namespace DBTesterUI.Models.Config
         public IDb Db { get; set; }
         public string ConnectionString { get; set; }
         public ConnectionStringState ConnectionStringState { get; set; }
+
+        public Brush ConnectionStringTextColor
+        {
+            get
+            {
+                switch (ConnectionStringState)
+                {
+                    case ConnectionStringState.Checking:
+                        return new SolidColorBrush(Color.FromRgb(150, 150, 150));
+                    case ConnectionStringState.NotValid:
+                        return new SolidColorBrush(Color.FromRgb(150, 0, 0));
+                    case ConnectionStringState.Valid:
+                        return new SolidColorBrush(Color.FromRgb(0, 150, 0));
+                }
+
+                return new SolidColorBrush(Color.FromRgb(171, 173, 179));
+            }
+        }
+
+        public string ConnectionStringCheckButtonText
+        {
+            get
+            {
+                switch (ConnectionStringState)
+                {
+                    case ConnectionStringState.Checking:
+                        return "Проверка...";
+                    case ConnectionStringState.NotValid:
+                        return "Ошибка";
+                    case ConnectionStringState.Valid:
+                        return "Ок";
+                }
+
+                return "Проверить";
+            }
+        }
 
         public DbShardGroupItem(IDb db)
         {
