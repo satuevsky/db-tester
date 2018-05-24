@@ -175,137 +175,97 @@
                 </Grid>
             </TabItem>
 
-            <!--Таб ""-->
-            <TabItem Header="TestView">
+
+            <!--Таб "Определние данных для проведения тестов"-->
+            <TabItem x:Name="DefineDataTab" Header="DefineDataTab">
+                <TabItem.DataContext>
+                    <config:DbDataModel />
+                </TabItem.DataContext>
+                <Grid>
+                    <Grid Margin="0,0,0,40" Background="#FFF7F7F7" HorizontalAlignment="Left" Width="250">
+                        <TextBlock Text="Настройка данных для проведения тестов."
+                                   HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"
+                                   VerticalAlignment="Top" Width="230" Height="34" />
+                        <TextBlock
+                            Text="На этом этапе необходимо указать структуру таблицы, которая будет использована при тестировании баз данных."
+                            HorizontalAlignment="Left" Margin="10,49,0,0" TextWrapping="Wrap" VerticalAlignment="Top"
+                            Width="230" Height="52" />
+                    </Grid>
+
+                    <Grid Margin="255,0,0,40">
+                        <TextBlock TextWrapping="Wrap" Text="Настройка структуры данных" Margin="37,21,122,0"
+                                   FontSize="16" Foreground="#FF4A76A8" Height="26" VerticalAlignment="Top" />
+                        <ListView Margin="37,52,10,0" BorderThickness="0" ItemsSource="{Binding Columns}">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Название" Width="150">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBox Text="{Binding}"></TextBox>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="Тип" Width="150" DisplayMemberBinding="{Binding Type}"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+
+                    </Grid>
+
+                    <Grid Height="40" VerticalAlignment="Bottom" Background="#FFF7F7F7">
+                        <Button Content="Назад" Margin="0,8,99,0" VerticalAlignment="Top"
+                                Height="24" HorizontalAlignment="Right" Width="75" Click="Back2_OnClick" />
+                        <Button x:Name="Next3Button" Content="Далее" Margin="0,8,16,0" VerticalAlignment="Top"
+                                Height="24" HorizontalAlignment="Right" Width="75" />
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!--Таб тестирования ""-->
+            <TabItem x:Name="TestTab" Header="TestTab">
+                <TabItem.DataContext>
+                    <config:DbTestModel/>
+                </TabItem.DataContext>
                 <Grid>
                     <GroupBox Header="Тесты" Margin="10,0,0,10" HorizontalAlignment="Left" Width="200">
-                        <ListBox x:Name="testsList" Margin="-2,0" BorderBrush="#00ABADB3" SelectedIndex="0">
-                            <ListBoxItem Width="184">
-                                <Grid Height="36" Width="162" Margin="8">
-                                    <TextBlock Text="Вставка данных" Margin="0,0,51,20" />
-                                    <TextBlock Text="Выполняется..." Margin="0,20,51,0" Foreground="#FFA0A0A0"
-                                               FontSize="9" />
-                                    <wpf:LoadingIndicator Style="{DynamicResource LoadingIndicatorRingStyleKey}"
-                                                          VerticalAlignment="Top" HorizontalAlignment="Right"
-                                                          Height="52" RenderTransformOrigin="0.5,0.5"
-                                                          Margin="0,-8,-7,-8" Width="48">
-                                        <wpf:LoadingIndicator.RenderTransform>
-                                            <TransformGroup>
-                                                <ScaleTransform ScaleX="0.7" ScaleY="0.7" />
-                                            </TransformGroup>
-                                        </wpf:LoadingIndicator.RenderTransform>
-                                    </wpf:LoadingIndicator>
-                                </Grid>
-                            </ListBoxItem>
-                            <ListBoxItem Width="184">
-                                <Grid Height="36" Width="162" Margin="8">
-                                    <TextBlock Text="Выборка данных" Margin="0,0,51,20" />
-                                    <TextBlock Text="В очереди" Margin="0,20,51,0" Foreground="#FFA0A0A0" FontSize="9" />
-                                </Grid>
-                            </ListBoxItem>
-                            <ListBoxItem Width="184">
-                                <Grid Height="36" Width="162" Margin="8">
-                                    <TextBlock Text="Обновление данных" Margin="0,0,51,20" />
-                                    <TextBlock Text="В очереди" Margin="0,20,51,0" Foreground="#FFA0A0A0" FontSize="9" />
-                                </Grid>
-                            </ListBoxItem>
-                            <ListBoxItem Width="184">
-                                <Grid Height="36" Width="162" Margin="8">
-                                    <TextBlock Text="Удаление данных" Margin="0,0,51,20" />
-                                    <TextBlock Text="В очереди" Margin="0,20,51,0" Foreground="#FFA0A0A0" FontSize="9" />
-                                </Grid>
-                            </ListBoxItem>
-                        </ListBox>
+                        <ListView Margin="0,10,-2,3" ItemsSource="{Binding Tests}" BorderThickness="0">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Height="36" Width="162" Margin="8">
+                                        <TextBlock Text="{Binding Name}" Margin="0,0,51,20" />
+                                        <TextBlock Text="{Binding StateString}" Margin="0,20,51,0" Foreground="#FFA0A0A0"
+                                                   FontSize="9" />
+                                        <wpf:LoadingIndicator Style="{DynamicResource LoadingIndicatorRingStyleKey}"
+                                                              Visibility="{Binding LoadIndicatorVisibility}"
+                                                              VerticalAlignment="Top" HorizontalAlignment="Right"
+                                                              Height="52" RenderTransformOrigin="0.5,0.5"
+                                                              Margin="0,-8,-7,-8" Width="48">
+                                            <wpf:LoadingIndicator.RenderTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
+                                                </TransformGroup>
+                                            </wpf:LoadingIndicator.RenderTransform>
+                                        </wpf:LoadingIndicator>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListViewItem}">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                <ContentPresenter />
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                        </ListView>
                     </GroupBox>
                     <GroupBox Header="Подробно" Margin="215,0,10,10">
                         <Grid>
-                            <Grid.DataContext>
-                                <models:TestModel />
-                            </Grid.DataContext>
-                            <oxy:PlotView Model="{Binding MyModel}" Margin="0,0,22,0" />
-                        </Grid>
-                    </GroupBox>
-                </Grid>
-            </TabItem>
-            <TabItem Header="Settings">
-                <Grid>
-                    <GroupBox Header="Базы данных" Margin="10,0,0,10" HorizontalAlignment="Left" Width="230">
-                        <Grid>
-                            <CheckBox Content="MySQL" IsChecked="True" HorizontalAlignment="Left" Margin="10,10,0,0"
-                                      VerticalAlignment="Top" />
-                            <CheckBox Content="MSSQL" IsChecked="False" HorizontalAlignment="Left" Margin="10,30,0,0"
-                                      VerticalAlignment="Top" />
-                            <CheckBox Content="MongoDB" IsChecked="True" HorizontalAlignment="Left" Margin="10,50,0,0"
-                                      VerticalAlignment="Top" />
-                            <Button Content="Начать тестирование" Margin="10,0,10,10" Height="33"
-                                    VerticalAlignment="Bottom" />
-                        </Grid>
-                    </GroupBox>
-                    <GroupBox Header="Настройка соединений" Margin="245,0,10,10">
-                        <Grid>
-                            <GroupBox Header="Количество машин: 1" Margin="10,0" Height="115" VerticalAlignment="Top">
-                                <Grid>
-                                    <xctk:IntegerUpDown Value="1" Height="19" VerticalAlignment="Top"
-                                                        Margin="121,10,320,0" />
-                                    <TextBlock Margin="0,10,371,0" TextWrapping="Wrap" Text="Количество машин"
-                                               VerticalAlignment="Top" TextAlignment="Right" />
-                                    <Button Content="Проверить" HorizontalAlignment="Left" Margin="402,34,0,0"
-                                            VerticalAlignment="Top" Width="75" Height="23" />
-                                    <TextBox HorizontalAlignment="Left" Height="23" Margin="121,34,0,0"
-                                             TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="276" />
-                                    <TextBlock Margin="10,38,371,0" TextWrapping="Wrap" Text="MySQL"
-                                               VerticalAlignment="Top" TextAlignment="Right" />
-                                    <Button Content="Проверить" HorizontalAlignment="Left" Margin="402,62,0,0"
-                                            VerticalAlignment="Top" Width="75" Height="23" />
-                                    <TextBox HorizontalAlignment="Left" Height="23" Margin="121,62,0,0"
-                                             TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="276" />
-                                    <TextBlock Margin="10,63,371,0" TextWrapping="Wrap" Text="MongoDB"
-                                               VerticalAlignment="Top" TextAlignment="Right" />
-                                </Grid>
-                            </GroupBox>
-                            <GroupBox Header="Количество машин: 2" Margin="10,120,10,0" Height="115"
-                                      VerticalAlignment="Top">
-                                <Grid>
-                                    <xctk:IntegerUpDown Value="2" Height="19" VerticalAlignment="Top"
-                                                        Margin="121,10,320,0" />
-                                    <TextBlock Margin="0,10,371,0" TextWrapping="Wrap" Text="Количество машин"
-                                               VerticalAlignment="Top" TextAlignment="Right" />
-                                    <Button Content="Проверить" HorizontalAlignment="Left" Margin="402,34,0,0"
-                                            VerticalAlignment="Top" Width="75" Height="23" />
-                                    <TextBox HorizontalAlignment="Left" Height="23" Margin="121,34,0,0"
-                                             TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="276" />
-                                    <TextBlock Margin="10,38,371,0" TextWrapping="Wrap" Text="MySQL"
-                                               VerticalAlignment="Top" TextAlignment="Right" />
-                                    <Button Content="Проверить" HorizontalAlignment="Left" Margin="402,62,0,0"
-                                            VerticalAlignment="Top" Width="75" Height="23" />
-                                    <TextBox HorizontalAlignment="Left" Height="23" Margin="121,62,0,0"
-                                             TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="276" />
-                                    <TextBlock Margin="10,63,371,0" TextWrapping="Wrap" Text="MongoDB"
-                                               VerticalAlignment="Top" TextAlignment="Right" />
-                                </Grid>
-                            </GroupBox>
-                            <GroupBox Header="Количество машин: 3" Margin="10,240,10,0" Height="115"
-                                      VerticalAlignment="Top">
-                                <Grid>
-                                    <xctk:IntegerUpDown Value="3" Height="19" VerticalAlignment="Top"
-                                                        Margin="121,10,320,0" />
-                                    <TextBlock Margin="0,10,371,0" TextWrapping="Wrap" Text="Количество машин"
-                                               VerticalAlignment="Top" TextAlignment="Right" />
-                                    <Button Content="Проверить" HorizontalAlignment="Left" Margin="402,34,0,0"
-                                            VerticalAlignment="Top" Width="75" Height="23" />
-                                    <TextBox HorizontalAlignment="Left" Height="23" Margin="121,34,0,0"
-                                             TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="276" />
-                                    <TextBlock Margin="10,38,371,0" TextWrapping="Wrap" Text="MySQL"
-                                               VerticalAlignment="Top" TextAlignment="Right" />
-                                    <Button Content="Проверить" HorizontalAlignment="Left" Margin="402,62,0,0"
-                                            VerticalAlignment="Top" Width="75" Height="23" />
-                                    <TextBox HorizontalAlignment="Left" Height="23" Margin="121,62,0,0"
-                                             TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="276" />
-                                    <TextBlock Margin="10,63,371,0" TextWrapping="Wrap" Text="MongoDB"
-                                               VerticalAlignment="Top" TextAlignment="Right" />
-                                </Grid>
-                            </GroupBox>
-                            <Button Content="Добавить еще" Margin="401,379,10,0" VerticalAlignment="Top" Height="25" />
+                            <oxy:PlotView Model="{Binding SelectedTest.GraphicModel}" Margin="0,0,22,0" />
                         </Grid>
                     </GroupBox>
                 </Grid>
