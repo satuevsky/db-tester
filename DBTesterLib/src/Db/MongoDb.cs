@@ -7,7 +7,7 @@ namespace DBTesterLib.Db
     {
         public string Name => "MongoDB";
         
-        public IDb Connect(string connectionString)
+        public IDb Create(string connectionString)
         {
             throw new NotImplementedException();
         }

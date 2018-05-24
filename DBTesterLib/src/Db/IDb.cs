@@ -7,7 +7,7 @@ namespace DBTesterLib.Db
     {
         string Name { get; }
 
-        IDb Connect(string connectionString);
+        IDb Create(string connectionString);
         
         bool CheckConnectionString(string connectionString);
 

@@ -8,7 +8,7 @@ namespace DBTesterLib.Db
     {
         public string Name => "MongoDb(Simulator)";
         
-        public IDb Connect(string connectionString)
+        public IDb Create(string connectionString)
         {
             throw new NotImplementedException();
         }
