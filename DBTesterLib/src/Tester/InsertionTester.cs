@@ -5,7 +5,7 @@ using DBTesterLib.Db;
 
 namespace DBTesterLib.Tester
 {
-    class InsertionTester: BaseTester
+    public class InsertionTester: BaseTester
     {
         private readonly IEnumerable<DataSet> _data;
 
@@ -14,7 +14,7 @@ namespace DBTesterLib.Tester
         /// </summary>
         /// <param name="db">База данных</param>
         /// <param name="data">Датасет для вставки</param>
-        public InsertionTester(IDb db, DataSet data): base(db)
+        public InsertionTester(DataSet data)
         {
             this._data = new []{data};
         }
@@ -24,9 +24,14 @@ namespace DBTesterLib.Tester
         /// </summary>
         /// <param name="db">База данных</param>
         /// <param name="data">Массив датасетов для вставки</param>
-        public InsertionTester(IDb db, IEnumerable<DataSet> data) : base(db)
+        public InsertionTester(IEnumerable<DataSet> data)
         {
             this._data = data;
+        }
+
+        public override BaseTester Create(IDb db)
+        {
+            return new InsertionTester(this._data) { Database = db };
         }
 
         /// <summary>

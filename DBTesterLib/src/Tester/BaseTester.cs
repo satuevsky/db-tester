@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using DBTesterLib.Db;
 
@@ -17,7 +18,7 @@ namespace DBTesterLib.Tester
     /// <summary>
     /// Базовый абстрактный класс для тестирования производительности баз данных
     /// </summary>
-    abstract class BaseTester
+    public abstract class BaseTester
     {
         public delegate void EventDelegate();
 
@@ -37,7 +38,7 @@ namespace DBTesterLib.Tester
         /// <summary>
         /// Объект для работы с бд.
         /// </summary>
-        public IDb Database { get; private set; }
+        public IDb Database { get; protected set; }
 
         /// <summary>
         /// Состояние тестера.
@@ -62,19 +63,23 @@ namespace DBTesterLib.Tester
             }
         }
 
-
-
         private DateTime _starTime;
         private DateTime _completeTime;
 
 
 
-        protected BaseTester(IDb db)
+        protected BaseTester()
         {
-            this.Database = db;
             this.ProgressValue = 0;
             this.State = TesterState.Stop;
         }
+
+        /// <summary>
+        /// Метод для создания нового экземпляра теста.
+        /// </summary>
+        /// <param name="db">бд</param>
+        /// <returns></returns>
+        public abstract BaseTester Create(IDb db);
 
         /// <summary>
         /// Метод в котором необходимо выполнять действия,
