@@ -88,6 +88,11 @@ namespace DBTesterUI.Models.Config
             _dbItemsModel = new DbItemsModel();
             _dbItemsModel.DbList.ForEach(item => item.Selected = true);
             Init();
+
+            AddGroup();
+            ShardGroups[1].MachinesCount = 2;
+            AddGroup();
+            ShardGroups[2].MachinesCount = 4;
         }
 
         public DbShardGroupsModel(DbItemsModel dbItems)
