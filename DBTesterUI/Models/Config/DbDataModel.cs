@@ -22,7 +22,7 @@ namespace DBTesterUI.Models.Config
 
         public DbDataModel()
         {
-            RowsCount = 100000;
+            RowsCount = 50000;
 
             Columns = new List<DbDataColumn>
             {
@@ -33,15 +33,16 @@ namespace DBTesterUI.Models.Config
             };
         }
 
-        public DataSet CreateDataSet()
+        public List<DataSet> CreateDataSet()
         {
-            var result = new DataSet(
+            var result = new List<DataSet>((int)Math.Ceiling((decimal)RowsCount / 1000));
+            var dataSet = new DataSet(
                 Columns.ToDictionary(column => column.Name, column => column.Type)
             );
             var random = new Random();
             long minDate = new DateTime(1900, 1, 1).Ticks;
             long maxDate = DateTime.Now.Ticks;
-            
+
             for (int i = 0; i < RowsCount; i++)
             {
                 object[] rowData = new object[this.Columns.Count];
@@ -70,7 +71,7 @@ namespace DBTesterUI.Models.Config
                                 value = RandomDate(minDate, maxDate, random);
                                 break;
                             case DataType.String:
-                                value = RandomString(32, random);
+                                value = RandomString(16, random);
                                 break;
                             default:
                                 value = null;
@@ -81,7 +82,14 @@ namespace DBTesterUI.Models.Config
                     }
                 }
 
-                result.AddRow(rowData);
+                dataSet.AddRow(rowData);
+            }
+
+            int copied = 0;
+            while (copied < dataSet.Rows.Count)
+            {
+                result.Add(dataSet.Slice(copied, 1000));
+                copied += 1000;
             }
 
             return result;
