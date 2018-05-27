@@ -13,11 +13,13 @@ namespace DBTesterUI.Models.Config
 {
     class DbTestItem
     {
-        public string Name { get; set; }
+        public event BaseTester.EventDelegate Progress;
 
-        public BaseTester Tester { get; set; }
-        
+        public string Name { get; set; }
+        public GraphicModel GraphicModel { get; set; }
         public List<DbShardGroup> DbShardGroups { get; set; }
+        public BaseTester Tester { get; set; }
+        public readonly BaseTester[,] Testers;
 
         public TesterState State
         {
@@ -66,11 +68,6 @@ namespace DBTesterUI.Models.Config
         public Visibility LoadIndicatorVisibility =>
             State == TesterState.InProgress ? Visibility.Visible : Visibility.Hidden;
 
-        public readonly BaseTester[,] Testers;
-
-        public GraphicModel GraphicModel { get; set; }
-        
-
 
         public DbTestItem(BaseTester tester, List<DbShardGroup> shardGroups)
         {
@@ -79,13 +76,73 @@ namespace DBTesterUI.Models.Config
             Testers = new BaseTester[shardGroups.Count, shardGroups[0].ShardGroupItems.Count];
             GraphicModel = new GraphicModel(this);
         }
+
+        public void Start()
+        {
+            if (Testers[0, 0] == null) // Если до этого не запускался тест
+            {
+                StartNext();
+            }
+        }
+
+        private void StartNext()
+        {
+            for (int groupIndex = 0; groupIndex < Testers.GetLength(0); groupIndex++)
+            {
+                for (int dbIndex = 0; dbIndex < Testers.GetLength(1); dbIndex++)
+                {
+                    var tester = Testers[groupIndex, dbIndex];
+                    if (tester == null)
+                    {
+                        tester = Testers[groupIndex, dbIndex] = InitTester(groupIndex, dbIndex);
+                    }
+
+                    if (tester.State == TesterState.Stop)
+                    {
+                        tester.Start();
+                        return;
+                    }
+                }
+            }
+        }
+
+        private BaseTester InitTester(int groupIndex, int dbIndex)
+        {
+            var dbInfo = DbShardGroups[groupIndex].ShardGroupItems[dbIndex];
+            var db = dbInfo.Db.Create(dbInfo.ConnectionString);
+            var tester = Tester.Create(db);
+
+            tester.Started += OnProgress;
+            tester.Progress += OnProgress;
+            tester.Completed += () =>
+            {
+                OnProgress();
+                if (State != TesterState.Complete)
+                {
+                    StartNext();
+                }
+            };
+
+            return tester;
+        }
+
+
+        protected virtual void OnProgress()
+        {
+            GraphicModel.Update();
+            Progress?.Invoke();
+        }
     }
 
     class DbTestModel
     {
+        public event BaseTester.EventDelegate Progress;
+
         public List<DbTestItem> Tests { get; set; }
 
         public DbTestItem SelectedTest { get; set; }
+
+        private int _currentItemIndex = 0;
 
         private List<DbShardGroup> DbShardGroups { get; set; }
 
@@ -93,57 +150,71 @@ namespace DBTesterUI.Models.Config
 
         public DbTestModel()
         {
-            Tests = new List<DbTestItem>();
+            Init(new DbShardGroupsModel(), new DbDataModel());
+        }
 
+        public DbTestModel(DbShardGroupsModel shardGroupsModel, DbDataModel dataModel)
+        {
+            Init(shardGroupsModel, dataModel);
+        }
+
+        private void Init(DbShardGroupsModel shardGroupsModel, DbDataModel dataModel)
+        {
+            var data = dataModel.CreateDataSet();
             Tests = new List<DbTestItem>
             {
-                new DbTestItem(new InsertionTester(new DataSet[0]), new List<DbShardGroup>(){ new DbShardGroup(new List<IDb>{new MongoDb()})})
+                new DbTestItem(new InsertionTester(data), shardGroupsModel.ShardGroups)
                 {
                     Name = "Вставка данных"
                 },
-                new DbTestItem(new InsertionTester(new DataSet[0]), new List<DbShardGroup>(){ new DbShardGroup(new List<IDb>{new MongoDb()})})
+                new DbTestItem(new InsertionTester(data), shardGroupsModel.ShardGroups)
                 {
                     Name = "Выборка данных"
                 },
-                new DbTestItem(new InsertionTester(new DataSet[0]), new List<DbShardGroup>(){ new DbShardGroup(new List<IDb>{new MongoDb()})})
+                new DbTestItem(new InsertionTester(data), shardGroupsModel.ShardGroups)
                 {
                     Name = "Изменение данных"
                 },
-                new DbTestItem(new InsertionTester(new DataSet[0]), new List<DbShardGroup>(){ new DbShardGroup(new List<IDb>{new MongoDb()})})
+                new DbTestItem(new InsertionTester(data), shardGroupsModel.ShardGroups)
                 {
                     Name = "Удаление данных"
                 }
             };
+
+            Tests.ForEach(item => { item.Progress += OnProgress; });
 
             SelectedTest = Tests[0];
         }
 
-        public DbTestModel(List<DbShardGroup> dbShardGroups, DbDataModel dataModel)
+        public void Start()
         {
-            DbShardGroups = dbShardGroups;
-            DataModel = dataModel;
+            StartNextTest();
+        }
 
-            Tests = new List<DbTestItem>
+        private void StartNextTest()
+        {
+            if (_currentItemIndex > Tests.Count - 1)
             {
-                new DbTestItem(new InsertionTester(dataModel.CreateDataSet()), dbShardGroups)
-                {
-                    Name = "Вставка данных"
-                },
-                new DbTestItem(new InsertionTester(dataModel.CreateDataSet()), dbShardGroups)
-                {
-                    Name = "Выборка данных"
-                },
-                new DbTestItem(new InsertionTester(dataModel.CreateDataSet()), dbShardGroups)
-                {
-                    Name = "Изменение данных"
-                },
-                new DbTestItem(new InsertionTester(dataModel.CreateDataSet()), dbShardGroups)
-                {
-                    Name = "Удаление данных"
-                }
-            };
+                // TODO OnComplete
+                return;
+            }
 
-            SelectedTest = Tests[0];
+            switch (Tests[_currentItemIndex].State)
+            {
+                case TesterState.Stop:
+                    Tests[_currentItemIndex].Start();
+                    break;
+                case TesterState.Complete:
+                    _currentItemIndex++;
+                    StartNextTest();
+                    break;
+            }
+        }
+
+        protected virtual void OnProgress()
+        {
+            Progress?.Invoke();
+            StartNextTest();
         }
     }
 }
