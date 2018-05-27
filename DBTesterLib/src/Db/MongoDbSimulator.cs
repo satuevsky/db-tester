@@ -4,13 +4,27 @@ using DBTesterLib.Data;
 
 namespace DBTesterLib.Db
 {
-    public class MongoDbSimulator: IDb
+    public class MongoDbSimulator : IDb
     {
         public string Name => "MongoDb(Simulator)";
-        
+
+        private int _timeout;
+        private Random _rand;
+
+        public MongoDbSimulator()
+        {
+            _rand = new Random();
+        }
+
+
         public IDb Create(string connectionString)
         {
-            throw new NotImplementedException();
+            var db = new MongoDbSimulator
+            {
+                _timeout = int.Parse(connectionString)
+            };
+            if (db._timeout < 100) db._timeout = 100;
+            return db;
         }
 
         public bool CheckConnectionString(string connectionString)
@@ -19,38 +33,31 @@ namespace DBTesterLib.Db
             return true;
         }
 
-        private int _timeout;
-
-        public MongoDbSimulator()
-        {
-        }
-
-
         public void Insert(DataSet dataSet)
         {
-            Thread.Sleep(_timeout + new Random(DateTime.Now.Millisecond).Next(-1000, 1000));
+            Thread.Sleep(_rand.Next(_timeout));
         }
 
         public DataSet SelectOne(string primaryKeyName, object primaryKeyValue)
         {
-            Thread.Sleep(new Random(DateTime.Now.Millisecond).Next());
+            Thread.Sleep(_rand.Next(_timeout));
             return null;
         }
 
         public DataSet SelectMany(string primaryKeyName, object[] primaryKeyValues)
         {
-            Thread.Sleep(new Random(DateTime.Now.Millisecond).Next());
+            Thread.Sleep(_rand.Next(_timeout));
             return null;
         }
 
         public void DeleteOne(string primaryKeyName, object primaryKeyValue)
         {
-            Thread.Sleep(new Random(DateTime.Now.Millisecond).Next());
+            Thread.Sleep(_rand.Next(_timeout));
         }
 
         public void DeleteMany(string primaryKeyName, object[] primaryKeyValues)
         {
-            Thread.Sleep(new Random(DateTime.Now.Millisecond).Next());
+            Thread.Sleep(_rand.Next(_timeout));
         }
     }
 }
