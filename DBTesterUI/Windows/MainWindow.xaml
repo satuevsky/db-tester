@@ -7,7 +7,6 @@
         xmlns:oxy="http://oxyplot.org/wpf"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:config="clr-namespace:DBTesterUI.Models.Config"
-        xmlns:models="clr-namespace:DBTesterUI.Graphics.Models"
         mc:Ignorable="d"
         Title="Тестирование" Height="484" Width="800">
 
@@ -170,7 +169,7 @@
                         <Button Content="Назад" Margin="0,8,99,0" VerticalAlignment="Top"
                                 Height="24" HorizontalAlignment="Right" Width="75" Click="Back2_OnClick" />
                         <Button x:Name="Next2Button" Content="Далее" Margin="0,8,16,0" VerticalAlignment="Top"
-                                Height="24" HorizontalAlignment="Right" Width="75" />
+                                Height="24" HorizontalAlignment="Right" Width="75" Click="Next2Button_OnClick" />
                     </Grid>
                 </Grid>
             </TabItem>
