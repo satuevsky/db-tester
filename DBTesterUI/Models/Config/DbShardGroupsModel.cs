@@ -1,7 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Media;
 using DBTesterLib.Db;
+using DBTesterUI.Annotations;
 
 namespace DBTesterUI.Models.Config
 {
@@ -13,11 +17,23 @@ namespace DBTesterUI.Models.Config
         Checking,
     }
 
-    class DbShardGroupItem
+    class DbShardGroupItem: INotifyPropertyChanged
     {
         public IDb Db { get; set; }
         public string ConnectionString { get; set; }
-        public ConnectionStringState ConnectionStringState { get; set; }
+
+        private ConnectionStringState _connectionStringState = ConnectionStringState.NotSet;
+
+        public ConnectionStringState ConnectionStringState
+        {
+            get => _connectionStringState;
+            set
+            {
+                _connectionStringState = value;
+                OnPropertyChanged(nameof(ConnectionStringTextColor));
+                OnPropertyChanged(nameof(ConnectionStringCheckButtonText));
+            }
+        }
 
         public Brush ConnectionStringTextColor
         {
@@ -60,11 +76,29 @@ namespace DBTesterUI.Models.Config
             Db = db;
             ConnectionStringState = ConnectionStringState.NotSet;
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 
-    class DbShardGroup
+    class DbShardGroup: INotifyPropertyChanged
     {
-        public int MachinesCount { get; set; }
+        private int _machinesCount = 1;
+
+        public int MachinesCount
+        {
+            get => _machinesCount;
+            set
+            {
+                _machinesCount = value;
+                OnPropertyChanged(nameof(Title));
+            }
+        }
 
         public List<DbShardGroupItem> ShardGroupItems { get; set; }
 
@@ -75,13 +109,21 @@ namespace DBTesterUI.Models.Config
             ShardGroupItems = new List<DbShardGroupItem>();
             dbs.ForEach(db => ShardGroupItems.Add(new DbShardGroupItem(db)));
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 
     class DbShardGroupsModel
     {
         private readonly DbItemsModel _dbItemsModel;
 
-        public List<DbShardGroup> ShardGroups { get; set; }
+        public ObservableCollection<DbShardGroup> ShardGroups { get; set; }
 
         public DbShardGroupsModel()
         {
@@ -103,7 +145,7 @@ namespace DBTesterUI.Models.Config
 
         private void Init()
         {
-            ShardGroups = new List<DbShardGroup>();
+            ShardGroups = new ObservableCollection<DbShardGroup>();
             AddGroup();
         }
 

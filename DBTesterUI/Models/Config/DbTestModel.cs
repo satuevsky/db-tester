@@ -69,11 +69,11 @@ namespace DBTesterUI.Models.Config
             State == TesterState.InProgress ? Visibility.Visible : Visibility.Hidden;
 
 
-        public DbTestItem(BaseTester tester, List<DbShardGroup> shardGroups)
+        public DbTestItem(BaseTester tester, IEnumerable<DbShardGroup> shardGroups)
         {
             Tester = tester;
-            DbShardGroups = shardGroups;
-            Testers = new BaseTester[shardGroups.Count, shardGroups[0].ShardGroupItems.Count];
+            DbShardGroups = shardGroups.ToList();
+            Testers = new BaseTester[shardGroups.ToList().Count, shardGroups.ToList()[0].ShardGroupItems.Count];
             GraphicModel = new GraphicModel(this);
         }
 
