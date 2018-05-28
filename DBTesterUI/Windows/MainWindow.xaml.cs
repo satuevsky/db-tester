@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using DBTesterUI.Models.Config;
 
 namespace DBTesterUI.Windows
@@ -26,9 +27,9 @@ namespace DBTesterUI.Windows
         {
             Dispatcher.Invoke(() =>
             {
-                var data = element.DataContext;
-                element.DataContext = null;
-                element.DataContext = data;
+//                var data = element.DataContext;
+//                element.DataContext = null;
+//                element.DataContext = data;
             });
         }
     }
