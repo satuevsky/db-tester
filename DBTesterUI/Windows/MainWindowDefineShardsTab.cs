@@ -28,7 +28,7 @@ namespace DBTesterUI.Windows
         {
             if ((sender as FrameworkElement)?.DataContext is DbShardGroupItem item)
             {
-                if (item.ConnectionStringState == ConnectionStringState.Checking || item.ConnectionString.Trim() == "")
+                if (item.ConnectionStringState == ConnectionStringState.Checking || item.ConnectionString == null || item.ConnectionString.Trim() == "")
                 {
                     return;
                 }
