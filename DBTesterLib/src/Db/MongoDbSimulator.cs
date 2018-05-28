@@ -23,7 +23,7 @@ namespace DBTesterLib.Db
             {
                 _timeout = int.Parse(connectionString)
             };
-            if (db._timeout < 100) db._timeout = 100;
+            if (db._timeout < 1) db._timeout = 1;
             return db;
         }
 
