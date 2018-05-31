@@ -87,6 +87,7 @@
     <Compile Include="Models\Config\DbShardGroupsModel.cs" />
     <Compile Include="Models\Config\DbTestModel.cs" />
     <Compile Include="Models\Config\TestModel\GraphicModel.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
@@ -97,6 +98,7 @@
     <Compile Include="Windows\MainWindowChooseDbTab.cs" />
     <Compile Include="Windows\MainWindowDefineShardsTab.cs" />
     <Compile Include="Windows\MainWindowNavigation.cs" />
+    <Compile Include="Windows\MainWindowTestsTab.cs" />
     <Page Include="Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
