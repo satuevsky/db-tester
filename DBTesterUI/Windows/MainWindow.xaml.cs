@@ -3,6 +3,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using DBTesterUI.Models.Config;
+using OxyPlot.Wpf;
+using Timer = System.Timers.Timer;
 
 namespace DBTesterUI.Windows
 {
@@ -17,20 +19,9 @@ namespace DBTesterUI.Windows
         private DbTestModel TestModel => TestTab.DataContext as DbTestModel;
 
 
-
         public MainWindow()
         {
             InitializeComponent();
-        }
-
-        void UpdateElement(FrameworkElement element)
-        {
-            Dispatcher.Invoke(() =>
-            {
-//                var data = element.DataContext;
-//                element.DataContext = null;
-//                element.DataContext = data;
-            });
         }
     }
 }
