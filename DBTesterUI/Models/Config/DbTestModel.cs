@@ -11,6 +11,7 @@ using DBTesterLib.Db;
 using DBTesterLib.Tester;
 using DBTesterUI.Annotations;
 using DBTesterUI.Models.Config.TestModel;
+using OxyPlot;
 
 namespace DBTesterUI.Models.Config
 {
@@ -19,7 +20,7 @@ namespace DBTesterUI.Models.Config
         public event BaseTester.EventDelegate Progress;
 
         public string Name { get; set; }
-        public GraphicModel GraphicModel { get; set; }
+        public IGraphicModel GraphicModel { get; set; }
         public List<DbShardGroup> DbShardGroups { get; set; }
         public BaseTester Tester { get; set; }
         public readonly BaseTester[,] Testers;
@@ -77,7 +78,7 @@ namespace DBTesterUI.Models.Config
             Tester = tester;
             DbShardGroups = shardGroups.ToList();
             Testers = new BaseTester[shardGroups.Count, shardGroups.ElementAt(0).ShardGroupItems.Count];
-            GraphicModel = new GraphicModel(this);
+            GraphicModel = new BarGraphicModel(this);
         }
 
         public void Start()
@@ -132,12 +133,12 @@ namespace DBTesterUI.Models.Config
 
         protected virtual void OnProgress()
         {
-            GraphicModel.Update();
+            (GraphicModel as IGraphicModel)?.Update();
             Progress?.Invoke();
 
             OnPropertyChanged(nameof(StateString));
             OnPropertyChanged(nameof(LoadIndicatorVisibility));
-            OnPropertyChanged(nameof(GraphicModel));
+            OnPropertyChanged(nameof(LineGraphicModel));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -220,7 +221,7 @@ namespace DBTesterUI.Models.Config
         {
             if (_currentItemIndex > Tests.Count - 1)
             {
-                // TODO OnComplete
+                MessageBox.Show("Тестирование завершено");
                 return;
             }
 

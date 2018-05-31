@@ -13,7 +13,7 @@ using OxyPlot.Series;
 
 namespace DBTesterUI.Models.Config.TestModel
 {
-    class GraphicModel : PlotModel
+    class LineGraphicModel : PlotModel, IGraphicModel
     {
         private Axis MachinesAxis { get; set; }
         private Axis DurationAxis { get; set; }
@@ -23,7 +23,7 @@ namespace DBTesterUI.Models.Config.TestModel
         private Random _rand;
 
 
-        public GraphicModel(DbTestItem test)
+        public LineGraphicModel(DbTestItem test)
         {
             _rand = new Random();
             TestItem = test;
@@ -82,6 +82,7 @@ namespace DBTesterUI.Models.Config.TestModel
 
         public void Update()
         {
+            Title = TestItem.Name;
             double maxDuration = 0;
             for (int groupIndex = 0; groupIndex < TestItem.Testers.GetLength(0); groupIndex++)
             {

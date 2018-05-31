@@ -32,7 +32,7 @@ namespace DBTesterUI.Windows
             TestTab.DataContext = new DbTestModel(ShardGroupsModel, DataModel);
             TestModel.Start();
 
-            var timer = new Timer(50);
+            var timer = new Timer(33);
             timer.Elapsed += (sender, args) => { TestGraphic.InvalidatePlot(); };
             timer.Start();
         }
