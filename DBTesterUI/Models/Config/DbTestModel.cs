@@ -228,6 +228,7 @@ namespace DBTesterUI.Models.Config
             {
                 case TesterState.Stop:
                     Tests[_currentItemIndex].Start();
+                    SelectedTest = Tests[_currentItemIndex];
                     break;
                 case TesterState.Complete:
                     _currentItemIndex++;
