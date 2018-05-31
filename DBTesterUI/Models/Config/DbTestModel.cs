@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using DBTesterLib.Data;
 using DBTesterLib.Db;
 using DBTesterLib.Tester;
+using DBTesterUI.Annotations;
 using DBTesterUI.Models.Config.TestModel;
 
 namespace DBTesterUI.Models.Config
 {
-    class DbTestItem
+    class DbTestItem: INotifyPropertyChanged
     {
         public event BaseTester.EventDelegate Progress;
 
@@ -69,11 +72,11 @@ namespace DBTesterUI.Models.Config
             State == TesterState.InProgress ? Visibility.Visible : Visibility.Hidden;
 
 
-        public DbTestItem(BaseTester tester, IEnumerable<DbShardGroup> shardGroups)
+        public DbTestItem(BaseTester tester, ICollection<DbShardGroup> shardGroups)
         {
             Tester = tester;
             DbShardGroups = shardGroups.ToList();
-            Testers = new BaseTester[shardGroups.ToList().Count, shardGroups.ToList()[0].ShardGroupItems.Count];
+            Testers = new BaseTester[shardGroups.Count, shardGroups.ElementAt(0).ShardGroupItems.Count];
             GraphicModel = new GraphicModel(this);
         }
 
@@ -131,16 +134,38 @@ namespace DBTesterUI.Models.Config
         {
             GraphicModel.Update();
             Progress?.Invoke();
+
+            OnPropertyChanged(nameof(StateString));
+            OnPropertyChanged(nameof(LoadIndicatorVisibility));
+            OnPropertyChanged(nameof(GraphicModel));
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 
-    class DbTestModel
+    class DbTestModel: INotifyPropertyChanged
     {
         public event BaseTester.EventDelegate Progress;
 
         public List<DbTestItem> Tests { get; set; }
 
-        public DbTestItem SelectedTest { get; set; }
+        private DbTestItem _selectedTest;
+
+        public DbTestItem SelectedTest
+        {
+            get => _selectedTest;
+            set
+            {
+                _selectedTest = value;
+                OnPropertyChanged(nameof(SelectedTest));
+            }
+        }
 
         private int _currentItemIndex = 0;
 
@@ -215,6 +240,14 @@ namespace DBTesterUI.Models.Config
         {
             Progress?.Invoke();
             StartNextTest();
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
