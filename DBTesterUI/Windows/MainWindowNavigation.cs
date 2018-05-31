@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Timers;
+using System.Windows;
 using DBTesterUI.Models.Config;
 
 namespace DBTesterUI.Windows
@@ -29,9 +30,11 @@ namespace DBTesterUI.Windows
         {
             TabControl1.SelectedIndex = 3;
             TestTab.DataContext = new DbTestModel(ShardGroupsModel, DataModel);
-            TestModel.Progress += () => { UpdateElement(TestTab); };
             TestModel.Start();
-            UpdateElement(TestTab);
+
+            var timer = new Timer(50);
+            timer.Elapsed += (sender, args) => { TestGraphic.InvalidatePlot(); };
+            timer.Start();
         }
 
         private void Next1Button_OnClick(object sender, RoutedEventArgs e)
