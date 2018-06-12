@@ -12,17 +12,17 @@ namespace DBTesterLib.Db
             throw new NotImplementedException();
         }
 
-        public bool CheckConnectionString(string connectionString)
-        {
-            return false;
-        }
-
-        public void DeleteMany(string primaryKeyName, object[] primaryKeyValues)
+        public IDb Create(string connectionString, DataColumn[] columns)
         {
             throw new NotImplementedException();
         }
 
-        public void DeleteOne(string primaryKeyName, object primaryKeyValue)
+        public bool CheckConnectionString(string connectionString)
+        {
+            return true;
+        }
+
+        public DataSet Select(PrimaryKeysRange keysRange)
         {
             throw new NotImplementedException();
         }
@@ -32,12 +32,12 @@ namespace DBTesterLib.Db
             throw new NotImplementedException();
         }
 
-        public DataSet SelectMany(string primaryKeyName, object[] primaryKeyValues)
+        public void Update(PrimaryKeysRange keysRange, DataRow row)
         {
             throw new NotImplementedException();
         }
 
-        public DataSet SelectOne(string primaryKeyName, object primaryKeyValue)
+        public void Delete(PrimaryKeysRange keysRange)
         {
             throw new NotImplementedException();
         }

@@ -54,7 +54,8 @@ namespace DBTesterUI.Models.Config
             {
                 new DbItem(this) {Db = new MongoDb()},
                 new DbItem(this) {Db = new MongoDbSimulator()},
-                new DbItem(this) {Db = new MySqlDb()}
+                new DbItem(this) {Db = new MySqlDb()},
+                new DbItem(this) {Db = new MySqlSimulator()},
             };
         }
 

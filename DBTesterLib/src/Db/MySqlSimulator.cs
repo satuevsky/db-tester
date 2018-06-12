@@ -4,21 +4,21 @@ using DBTesterLib.Data;
 
 namespace DBTesterLib.Db
 {
-    public class MongoDbSimulator : IDb
+    public class MySqlSimulator : IDb
     {
-        public string Name => "MongoDb(Simulator)";
+        public string Name => "MySQL(Simulator)";
 
         private int _timeout;
         private Random _rand;
 
-        public MongoDbSimulator()
+        public MySqlSimulator()
         {
             _rand = new Random();
         }
 
         public IDb Create(string connectionString, DataColumn[] columns)
         {
-            var db = new MongoDbSimulator
+            var db = new MySqlSimulator
             {
                 _timeout = int.Parse(connectionString)
             };
@@ -40,7 +40,7 @@ namespace DBTesterLib.Db
 
         public void Insert(DataSet dataSet)
         {
-            Thread.Sleep(_rand.Next(1, _timeout));
+            Thread.Sleep(_rand.Next(_timeout));
         }
 
         public void Update(PrimaryKeysRange keysRange, DataRow row)
