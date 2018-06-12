@@ -26,6 +26,9 @@ namespace DBTesterUI.Models.TestModel
             }
         }
 
+        public bool IsComplete => _currentItemIndex >= Tests.Count;
+
+
         private int _currentItemIndex = 0;
 
         private List<DbShardGroup> DbShardGroups { get; set; }
@@ -81,6 +84,7 @@ namespace DBTesterUI.Models.TestModel
         {
             if (_currentItemIndex > Tests.Count - 1)
             {
+                OnPropertyChanged(nameof(IsComplete));
                 MessageBox.Show("Тестирование завершено");
                 return;
             }

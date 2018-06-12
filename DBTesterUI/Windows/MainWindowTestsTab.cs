@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 using DBTesterUI.Models.TestModel;
 
 namespace DBTesterUI.Windows
@@ -9,6 +10,11 @@ namespace DBTesterUI.Windows
         {
             if(TestModel == null) return;
             TestModel.SelectedTest = ((ListView)sender).SelectedItem as DbTestItem;
+        }
+
+        private void TestGoBackButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            ShowChooseDbsTab();
         }
     }
 }

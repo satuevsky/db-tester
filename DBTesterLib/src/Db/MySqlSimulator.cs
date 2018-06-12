@@ -40,7 +40,7 @@ namespace DBTesterLib.Db
 
         public void Insert(DataSet dataSet)
         {
-            Thread.Sleep(_rand.Next(_timeout));
+            Thread.Sleep(_rand.Next(1, _timeout));
         }
 
         public void Update(PrimaryKeysRange keysRange, DataRow row)

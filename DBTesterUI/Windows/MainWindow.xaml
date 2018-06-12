@@ -230,43 +230,46 @@
                 </TabItem.DataContext>
                 <Grid>
                     <GroupBox Header="Тесты" Margin="10,0,0,10" HorizontalAlignment="Left" Width="200">
-                        <ListView Margin="0,10,-2,3" ItemsSource="{Binding Tests}" BorderThickness="0"
+                        <Grid>
+                            <ListView Margin="0,10,-2,41" ItemsSource="{Binding Tests}" BorderThickness="0"
                                   SelectedItem="{Binding SelectedTest}"
                                   SelectionChanged="TestsView_OnSelectionChanged">
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Height="36" Width="162" Margin="8">
-                                        <TextBlock Text="{Binding Name}" Margin="0,0,51,20" />
-                                        <TextBlock Text="{Binding StateString}" Margin="0,20,51,0"
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Height="36" Width="162" Margin="8">
+                                            <TextBlock Text="{Binding Name}" Margin="0,0,51,20" />
+                                            <TextBlock Text="{Binding StateString}" Margin="0,20,51,0"
                                                    Foreground="#FFA0A0A0"
                                                    FontSize="9" />
-                                        <wpf:LoadingIndicator Style="{DynamicResource LoadingIndicatorRingStyleKey}"
+                                            <wpf:LoadingIndicator Style="{DynamicResource LoadingIndicatorRingStyleKey}"
                                                               Visibility="{Binding LoadIndicatorVisibility}"
                                                               VerticalAlignment="Top" HorizontalAlignment="Right"
                                                               Height="52" RenderTransformOrigin="0.5,0.5"
                                                               Margin="0,-8,-7,-8" Width="48">
-                                            <wpf:LoadingIndicator.RenderTransform>
-                                                <TransformGroup>
-                                                    <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
-                                                </TransformGroup>
-                                            </wpf:LoadingIndicator.RenderTransform>
-                                        </wpf:LoadingIndicator>
-                                    </Grid>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                            <!-- <ListView.ItemContainerStyle> -->
-                            <!--     <Style TargetType="{x:Type ListViewItem}"> -->
-                            <!--         <Setter Property="Background" Value="Transparent" /> -->
-                            <!--         <Setter Property="Template"> -->
-                            <!--             <Setter.Value> -->
-                            <!--                 <ControlTemplate TargetType="{x:Type ListViewItem}"> -->
-                            <!--                     <ContentPresenter /> -->
-                            <!--                 </ControlTemplate> -->
-                            <!--             </Setter.Value> -->
-                            <!--         </Setter> -->
-                            <!--     </Style> -->
-                            <!-- </ListView.ItemContainerStyle> -->
-                        </ListView>
+                                                <wpf:LoadingIndicator.RenderTransform>
+                                                    <TransformGroup>
+                                                        <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
+                                                    </TransformGroup>
+                                                </wpf:LoadingIndicator.RenderTransform>
+                                            </wpf:LoadingIndicator>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                                <!-- <ListView.ItemContainerStyle> -->
+                                <!--     <Style TargetType="{x:Type ListViewItem}"> -->
+                                <!--         <Setter Property="Background" Value="Transparent" /> -->
+                                <!--         <Setter Property="Template"> -->
+                                <!--             <Setter.Value> -->
+                                <!--                 <ControlTemplate TargetType="{x:Type ListViewItem}"> -->
+                                <!--                     <ContentPresenter /> -->
+                                <!--                 </ControlTemplate> -->
+                                <!--             </Setter.Value> -->
+                                <!--         </Setter> -->
+                                <!--     </Style> -->
+                                <!-- </ListView.ItemContainerStyle> -->
+                            </ListView>
+                            <Button Height="26" VerticalAlignment="Bottom" Margin="10,0,10,10" IsEnabled="{Binding IsComplete}" Click="TestGoBackButton_OnClick">Назад</Button>
+                        </Grid>
                     </GroupBox>
                     <GroupBox x:Name="TestTabGraphicBox" Header="Подробно" Margin="215,0,10,10">
                         <Grid>
