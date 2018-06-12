@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using DBTesterLib.Data;
 using DBTesterLib.Db;
 
 namespace DBTesterLib.Tester
 {
-    public class InsertionTester: BaseTester
+    public class InsertionTester : BaseTester
     {
         private readonly IEnumerable<DataSet> _data;
 
@@ -16,7 +18,7 @@ namespace DBTesterLib.Tester
         /// <param name="data">Датасет для вставки</param>
         public InsertionTester(DataSet data)
         {
-            this._data = new []{data};
+            this._data = new[] {data};
         }
 
         /// <summary>
@@ -31,7 +33,7 @@ namespace DBTesterLib.Tester
 
         public override BaseTester Create(IDb db)
         {
-            return new InsertionTester(this._data) { Database = db };
+            return new InsertionTester(this._data) {Database = db};
         }
 
         /// <summary>
@@ -40,13 +42,36 @@ namespace DBTesterLib.Tester
         protected override void Test()
         {
             int length = _data.Count();
-            double i = 0;
 
-            foreach (var dataSet in _data)
+            int i = 0;
+            int threadCount = 1;
+            object lockObj = new Object();
+
+            for (var ti = 0; ti < threadCount; ti++)
             {
-                Database.Insert(dataSet);
-                i++;
-                this.OnProgress(i / length);
+                new Thread(() =>
+                {
+                    DataSet dataSet;
+                    while (true)
+                    {
+                        lock (lockObj)
+                        {
+                            if (i >= length)
+                            {
+                                OnProgress(1);
+                                break;
+                            }
+                            dataSet = _data.ElementAt(i++);
+                        }
+
+                        var startTime = DateTime.Now;
+                        Database.Insert(dataSet);
+                        var elapsedTime = DateTime.Now - startTime;
+                        double timeForOneRow = elapsedTime.TotalMilliseconds / dataSet.Rows.Count;
+                        OnSpeed(timeForOneRow);
+                        OnProgress((double) i / length);
+                    }
+                }).Start();
             }
         }
     }

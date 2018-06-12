@@ -63,13 +63,41 @@ namespace DBTesterLib.Tester
             }
         }
 
+        /// <summary>
+        /// Текущее время в милисекундах, затрачиваемое на обработку одной записи
+        /// </summary>
+        public double Speed { get; private set; }
+
+        /// <summary>
+        /// Среднее время в милисекундах, затрачиваемое на обработку одной записи
+        /// </summary>
+        public double AvgSpeed => _speedCount == 0 ? 0 : _speedSum / _speedCount;
+
+
+        /// <summary>
+        /// Минимальное время в милисекундах, затрачиваемое на обработку одной записи
+        /// </summary>
+        public double MinSpeed => double.IsNaN(_minSpeed) ? 0 : _minSpeed;
+
+        /// <summary>
+        /// Максимальное время в милисекундах, затрачиваемое на обработку одной записи
+        /// </summary>
+        public double MaxSpeed => double.IsNaN(_maxSpeed) ? 0 : _maxSpeed;
+
         private DateTime _starTime;
         private DateTime _completeTime;
+
+        private double _minSpeed = Double.NaN;
+        private double _maxSpeed = Double.NaN;
+        private double _speedSum = 0;
+        private int _speedCount = 0;
+
 
 
 
         protected BaseTester()
         {
+            Speed = 0;
             this.ProgressValue = 0;
             this.State = TesterState.Stop;
         }
@@ -98,11 +126,28 @@ namespace DBTesterLib.Tester
             {
                 this.OnStart();
                 Test();
-                this.OnComplete();
             }).Start();
         }
 
 
+        protected void OnSpeed(double speed)
+        {
+            Speed = speed;
+            if (double.IsNaN(_minSpeed) || speed < _minSpeed)
+            {
+                if (speed == 0)
+                {
+
+                }
+                _minSpeed = speed;
+            }
+            if (double.IsNaN(_maxSpeed) || speed > _maxSpeed)
+            {
+                _maxSpeed = speed;
+            }
+            _speedSum += speed;
+            _speedCount++;
+        }
 
         private void OnStart()
         {
@@ -113,6 +158,8 @@ namespace DBTesterLib.Tester
 
         private void OnComplete()
         {
+            if(State == TesterState.Complete) return;
+
             this._completeTime = DateTime.Now;
             this.State = TesterState.Complete;
             this.Completed?.Invoke();
@@ -122,6 +169,10 @@ namespace DBTesterLib.Tester
         {
             ProgressValue = progressValue;
             this.Progress?.Invoke();
+            if (progressValue >= 1)
+            {
+                OnComplete();
+            }
         }
     }
 }

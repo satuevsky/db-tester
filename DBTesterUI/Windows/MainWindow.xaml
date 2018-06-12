@@ -1,4 +1,4 @@
-<Window x:Class="DBTesterUI.Windows.MainWindow"
+﻿<Window x:Class="DBTesterUI.Windows.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -269,7 +269,29 @@
                     </GroupBox>
                     <GroupBox x:Name="TestTabGraphicBox" Header="Подробно" Margin="215,0,10,10">
                         <Grid>
-                            <oxy:PlotView x:Name="TestGraphic"  Model="{Binding SelectedTest.GraphicModel}" Margin="0,10,22,0" Height="327" VerticalAlignment="Top" />
+                            <oxy:PlotView x:Name="TestGraphic" Model="{Binding SelectedTest.GraphicModel}"
+                                          Margin="0,10,22,0" Height="327" VerticalAlignment="Top" />
+                            <Grid Margin="0,337,0,0">
+                                <DataGrid
+                                    ItemsSource="{Binding SelectedTest.TestDbStates}"
+                                    AutoGenerateColumns="False"
+                                    HorizontalGridLinesBrush="#DBDBDB"
+                                    VerticalGridLinesBrush="#F0F0F0"
+                                    >
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="База данных" Binding="{Binding Name, Mode=OneWay}"
+                                                            Width="150" />
+                                        <DataGridTextColumn Header="Скорость"
+                                                            Binding="{Binding RowsInSecond, Mode=OneWay}" Width="80" />
+                                        <DataGridTextColumn Header="Средн."
+                                                            Binding="{Binding RowsInSecondAvg, Mode=OneWay}" Width="80" />
+                                        <DataGridTextColumn Header="Мин."
+                                                            Binding="{Binding RowsInSecondMin, Mode=OneWay}" Width="80" />
+                                        <DataGridTextColumn Header="Макс."
+                                                            Binding="{Binding RowsInSecondMax, Mode=OneWay}" Width="80" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
                         </Grid>
                     </GroupBox>
                 </Grid>
