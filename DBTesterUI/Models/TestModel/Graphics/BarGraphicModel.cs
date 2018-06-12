@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Media;
 using DBTesterLib.Db;
-using DBTesterLib.Tester;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 
-namespace DBTesterUI.Models.Config.TestModel
+namespace DBTesterUI.Models.TestModel.Graphics
 {
     class BarGraphicModel : PlotModel, IGraphicModel
     {
@@ -80,27 +75,30 @@ namespace DBTesterUI.Models.Config.TestModel
 
         public void Update()
         {
-            Title = TestItem.Name;
-            double maxDuration = 0;
-            for (int groupIndex = 0; groupIndex < TestItem.Testers.GetLength(0); groupIndex++)
+            lock (this)
             {
-                for (int dbIndex = 0; dbIndex < TestItem.Testers.GetLength(1); dbIndex++)
+                Title = TestItem.Name;
+                double maxDuration = 0;
+                for (int groupIndex = 0; groupIndex < TestItem.Testers.GetLength(0); groupIndex++)
                 {
-                    var tester = TestItem.Testers[groupIndex, dbIndex];
-                    ColumnSeries series = Series[dbIndex] as ColumnSeries;
-                    if (groupIndex == 0)
+                    for (int dbIndex = 0; dbIndex < TestItem.Testers.GetLength(1); dbIndex++)
                     {
-                        series?.Items.Clear();
+                        var tester = TestItem.Testers[groupIndex, dbIndex];
+                        ColumnSeries series = Series[dbIndex] as ColumnSeries;
+                        if (groupIndex == 0)
+                        {
+                            series?.Items.Clear();
+                        }
+
+                        double duration = tester?.Duration.TotalSeconds ?? 0;
+                        maxDuration = duration > maxDuration ? duration : maxDuration;
+
+                        series?.Items.Add(new ColumnItem(duration));
                     }
-
-                    double duration = tester?.Duration.TotalSeconds ?? 0;
-                    maxDuration = duration > maxDuration ? duration : maxDuration;
-
-                    series?.Items.Add(new ColumnItem(duration));
                 }
-            }
 
-            DurationAxis.Maximum = Math.Ceiling(maxDuration / 10) * 10;
+                DurationAxis.Maximum = Math.Ceiling(maxDuration / 10) * 10;
+            }
         }
 
         private OxyColor GetColor(IDb db)

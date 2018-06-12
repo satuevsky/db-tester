@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Media;
 using DBTesterLib.Db;
-using DBTesterLib.Tester;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 
-namespace DBTesterUI.Models.Config.TestModel
+namespace DBTesterUI.Models.TestModel.Graphics
 {
     class LineGraphicModel : PlotModel, IGraphicModel
     {

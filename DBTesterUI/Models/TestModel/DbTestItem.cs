@@ -1,29 +1,130 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using DBTesterLib.Data;
-using DBTesterLib.Db;
 using DBTesterLib.Tester;
 using DBTesterUI.Annotations;
-using DBTesterUI.Models.Config.TestModel;
-using OxyPlot;
+using DBTesterUI.Models.Config;
+using DBTesterUI.Models.TestModel.Graphics;
 
-namespace DBTesterUI.Models.Config
+namespace DBTesterUI.Models.TestModel
 {
+    class TestItemDbState: INotifyPropertyChanged
+    {
+        private DbTestItem _testItem;
+        private int _groupIndex;
+        private int _dbIndex;
+
+        public string Name => "[" + _testItem.DbShardGroups[_groupIndex].MachinesCount + "]" +_testItem.DbShardGroups[_groupIndex].ShardGroupItems[_dbIndex].Db.Name;
+
+        public string RowsInSecond
+        {
+            get
+            {
+                var tester = _testItem.Testers[_groupIndex, _dbIndex];
+                double rowsInSecond = 0;
+                if (tester != null)
+                {
+                    rowsInSecond = 1000 / tester.Speed;
+                }
+
+                return rowsInSecond.ToString("## 'зап/сек'");
+            }
+        }
+
+        public string RowsInSecondAvg
+        {
+            get
+            {
+                var tester = _testItem.Testers[_groupIndex, _dbIndex];
+                double rowsInSecond = 0;
+                if (tester != null)
+                {
+                    rowsInSecond = 1000 / tester.AvgSpeed;
+                }
+
+                return rowsInSecond.ToString("## 'зап/сек'");
+            }
+        }
+
+        public string RowsInSecondMin
+        {
+            get
+            {
+                var tester = _testItem.Testers[_groupIndex, _dbIndex];
+                double rowsInSecond = 0;
+                if (tester != null)
+                {
+                    rowsInSecond = 1000 / tester.MaxSpeed;
+                }
+
+                return rowsInSecond.ToString("## 'зап/сек'");
+            }
+        }
+
+        public string RowsInSecondMax
+        {
+            get
+            {
+                var tester = _testItem.Testers[_groupIndex, _dbIndex];
+                double rowsInSecond = 0;
+                if (tester != null)
+                {
+                    rowsInSecond = 1000 / tester.MinSpeed;
+                }
+
+                return rowsInSecond.ToString("## 'зап/сек'");
+            }
+        }
+
+
+        public TestItemDbState(DbTestItem testItem, int groupIndex, int dbIndex)
+        {
+            _testItem = testItem;
+            _groupIndex = groupIndex;
+            _dbIndex = dbIndex;
+
+            var t = new Timer(1000);
+
+            t.Elapsed += (sender, args) =>
+            {
+                OnPropertyChanged(nameof(RowsInSecond));
+                OnPropertyChanged(nameof(RowsInSecondAvg));
+                OnPropertyChanged(nameof(RowsInSecondMax));
+                OnPropertyChanged(nameof(RowsInSecondMin));
+            };
+
+            t.Start();
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+
     class DbTestItem: INotifyPropertyChanged
     {
         public event BaseTester.EventDelegate Progress;
 
         public string Name { get; set; }
+
         public IGraphicModel GraphicModel { get; set; }
+
         public List<DbShardGroup> DbShardGroups { get; set; }
+
         public BaseTester Tester { get; set; }
+
         public readonly BaseTester[,] Testers;
+
+        public ObservableCollection<TestItemDbState> TestDbStates { get; set; }
 
         public TesterState State
         {
@@ -72,13 +173,29 @@ namespace DBTesterUI.Models.Config
         public Visibility LoadIndicatorVisibility =>
             State == TesterState.InProgress ? Visibility.Visible : Visibility.Hidden;
 
+        private DataColumn[] _dataColumns;
 
-        public DbTestItem(BaseTester tester, ICollection<DbShardGroup> shardGroups)
+        public DbTestItem(BaseTester tester, ICollection<DbShardGroup> shardGroups, DataColumn[] dataColumns)
         {
+            _dataColumns = dataColumns;
             Tester = tester;
             DbShardGroups = shardGroups.ToList();
             Testers = new BaseTester[shardGroups.Count, shardGroups.ElementAt(0).ShardGroupItems.Count];
+            TestDbStates = new ObservableCollection<TestItemDbState>();
             GraphicModel = new BarGraphicModel(this);
+
+            Init();
+        }
+
+        private void Init()
+        {
+            for (var groupIndex = 0; groupIndex < DbShardGroups.Count; groupIndex++)
+            {
+                for (var dbIndex = 0; dbIndex < DbShardGroups[groupIndex].ShardGroupItems.Count; dbIndex++)
+                {
+                    TestDbStates.Add(new TestItemDbState(this, groupIndex, dbIndex));
+                }
+            }
         }
 
         public void Start()
@@ -113,7 +230,7 @@ namespace DBTesterUI.Models.Config
         private BaseTester InitTester(int groupIndex, int dbIndex)
         {
             var dbInfo = DbShardGroups[groupIndex].ShardGroupItems[dbIndex];
-            var db = dbInfo.Db.Create(dbInfo.ConnectionString);
+            var db = dbInfo.InitDb(_dataColumns);
             var tester = Tester.Create(db);
 
             tester.Started += OnProgress;
@@ -133,115 +250,13 @@ namespace DBTesterUI.Models.Config
 
         protected virtual void OnProgress()
         {
-            (GraphicModel as IGraphicModel)?.Update();
+            GraphicModel?.Update();
             Progress?.Invoke();
 
             OnPropertyChanged(nameof(StateString));
             OnPropertyChanged(nameof(LoadIndicatorVisibility));
             OnPropertyChanged(nameof(LineGraphicModel));
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-    }
-
-    class DbTestModel: INotifyPropertyChanged
-    {
-        public event BaseTester.EventDelegate Progress;
-
-        public List<DbTestItem> Tests { get; set; }
-
-        private DbTestItem _selectedTest;
-
-        public DbTestItem SelectedTest
-        {
-            get => _selectedTest;
-            set
-            {
-                _selectedTest = value;
-                OnPropertyChanged(nameof(SelectedTest));
-            }
-        }
-
-        private int _currentItemIndex = 0;
-
-        private List<DbShardGroup> DbShardGroups { get; set; }
-
-        private DbDataModel DataModel { get; set; }
-
-        public DbTestModel()
-        {
-            Init(new DbShardGroupsModel(), new DbDataModel());
-        }
-
-        public DbTestModel(DbShardGroupsModel shardGroupsModel, DbDataModel dataModel)
-        {
-            Init(shardGroupsModel, dataModel);
-        }
-
-        private void Init(DbShardGroupsModel shardGroupsModel, DbDataModel dataModel)
-        {
-            var data = dataModel.CreateDataSet();
-            Tests = new List<DbTestItem>
-            {
-                new DbTestItem(new InsertionTester(data), shardGroupsModel.ShardGroups)
-                {
-                    Name = "Вставка данных"
-                },
-                new DbTestItem(new InsertionTester(data), shardGroupsModel.ShardGroups)
-                {
-                    Name = "Выборка данных"
-                },
-                new DbTestItem(new InsertionTester(data), shardGroupsModel.ShardGroups)
-                {
-                    Name = "Изменение данных"
-                },
-                new DbTestItem(new InsertionTester(data), shardGroupsModel.ShardGroups)
-                {
-                    Name = "Удаление данных"
-                }
-            };
-
-            Tests.ForEach(item => { item.Progress += OnProgress; });
-
-            SelectedTest = Tests[0];
-        }
-
-        public void Start()
-        {
-            StartNextTest();
-        }
-
-        private void StartNextTest()
-        {
-            if (_currentItemIndex > Tests.Count - 1)
-            {
-                MessageBox.Show("Тестирование завершено");
-                return;
-            }
-
-            switch (Tests[_currentItemIndex].State)
-            {
-                case TesterState.Stop:
-                    Tests[_currentItemIndex].Start();
-                    SelectedTest = Tests[_currentItemIndex];
-                    break;
-                case TesterState.Complete:
-                    _currentItemIndex++;
-                    StartNextTest();
-                    break;
-            }
-        }
-
-        protected virtual void OnProgress()
-        {
-            Progress?.Invoke();
-            StartNextTest();
+            OnPropertyChanged(nameof(TestDbStates));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
