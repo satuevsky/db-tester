@@ -20,22 +20,25 @@ namespace DBTesterUI.Models.Config
 
         public List<DbDataColumn> Columns { get; set; }
 
+        public int ButchSize { get; set; }
+
         public DbDataModel()
         {
             RowsCount = 50000;
+            ButchSize = 500;
 
             Columns = new List<DbDataColumn>
             {
-                new DbDataColumn {Name = "Id", Type = DataType.Number},
-                new DbDataColumn {Name = "Name", Type = DataType.String},
-                new DbDataColumn {Name = "BDate", Type = DataType.Date},
-                new DbDataColumn {Name = "Age", Type = DataType.Number},
+                new DbDataColumn {Name = "_id", Type = DataType.Number},
+                new DbDataColumn {Name = "name", Type = DataType.String},
+                new DbDataColumn {Name = "bdate", Type = DataType.Date},
+                new DbDataColumn {Name = "age", Type = DataType.Number},
             };
         }
 
         public List<DataSet> CreateDataSet()
         {
-            var result = new List<DataSet>((int)Math.Ceiling((decimal)RowsCount / 1000));
+            var result = new List<DataSet>((int)Math.Ceiling((decimal)RowsCount / ButchSize));
             var dataSet = new DataSet(
                 Columns.ToDictionary(column => column.Name, column => column.Type)
             );
@@ -88,8 +91,8 @@ namespace DBTesterUI.Models.Config
             int copied = 0;
             while (copied < dataSet.Rows.Count)
             {
-                result.Add(dataSet.Slice(copied, 1000));
-                copied += 1000;
+                result.Add(dataSet.Slice(copied, ButchSize));
+                copied += ButchSize;
             }
 
             return result;

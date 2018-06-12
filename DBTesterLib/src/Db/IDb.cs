@@ -3,22 +3,34 @@ using DBTesterLib.Data;
 
 namespace DBTesterLib.Db
 {
+    public class PrimaryKeysRange
+    {
+        public object From { get; set; }
+        public object To { get; set; }
+
+        public PrimaryKeysRange(){}
+
+        public PrimaryKeysRange(object from, object to)
+        {
+            From = from;
+            To = to;
+        }
+    }
+
     public interface IDb
     {
         string Name { get; }
 
-        IDb Create(string connectionString);
+        IDb Create(string connectionString, DataColumn[] columns);
         
         bool CheckConnectionString(string connectionString);
 
+        DataSet Select(PrimaryKeysRange keysRange);
+
         void Insert(DataSet dataSet);
 
-        DataSet SelectOne(string primaryKeyName, object primaryKeyValue);
+        void Update(PrimaryKeysRange keysRange, DataRow row);
 
-        DataSet SelectMany(string primaryKeyName, object[] primaryKeyValues);
-
-        void DeleteOne(string primaryKeyName, object primaryKeyValue);
-
-        void DeleteMany(string primaryKeyName, object[] primaryKeyValues);
+        void Delete(PrimaryKeysRange keysRange);
     }
 }

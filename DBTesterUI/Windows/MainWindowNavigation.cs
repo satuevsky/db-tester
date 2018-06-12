@@ -1,6 +1,7 @@
 ﻿using System.Timers;
 using System.Windows;
 using DBTesterUI.Models.Config;
+using DBTesterUI.Models.TestModel;
 
 namespace DBTesterUI.Windows
 {

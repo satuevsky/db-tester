@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
+using DBTesterLib.Data;
 using DBTesterLib.Db;
 using DBTesterUI.Annotations;
 
@@ -17,8 +18,10 @@ namespace DBTesterUI.Models.Config
         Checking,
     }
 
-    class DbShardGroupItem: INotifyPropertyChanged
+    class DbShardGroupItem : INotifyPropertyChanged
     {
+        private IDb _initedDb;
+
         public IDb Db { get; set; }
         public string ConnectionString { get; set; }
 
@@ -77,6 +80,11 @@ namespace DBTesterUI.Models.Config
             ConnectionStringState = ConnectionStringState.NotSet;
         }
 
+        public IDb InitDb(DataColumn[] columns)
+        {
+            return _initedDb ?? (_initedDb = Db.Create(ConnectionString, columns));
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
@@ -86,7 +94,7 @@ namespace DBTesterUI.Models.Config
         }
     }
 
-    class DbShardGroup: INotifyPropertyChanged
+    class DbShardGroup : INotifyPropertyChanged
     {
         private int _machinesCount = 1;
 

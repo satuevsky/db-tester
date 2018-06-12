@@ -1,4 +1,4 @@
-﻿<Window x:Class="DBTesterUI.Windows.MainWindow"
+<Window x:Class="DBTesterUI.Windows.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,8 +7,9 @@
         xmlns:oxy="http://oxyplot.org/wpf"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:config="clr-namespace:DBTesterUI.Models.Config"
+        xmlns:testModel="clr-namespace:DBTesterUI.Models.TestModel"
         mc:Ignorable="d"
-        Title="Тестирование" Height="484" Width="800">
+        Title="Тестирование баз данных" Height="554" Width="800">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -42,7 +43,7 @@
                                 <DataTemplate>
                                     <CheckBox
                                         IsChecked="{Binding Selected,  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                        Content="{Binding Db.Name}" Margin="0, 8, 0, 0"/>
+                                        Content="{Binding Db.Name}" Margin="0, 8, 0, 0" />
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                             <ListView.ItemContainerStyle>
@@ -92,7 +93,8 @@
                             Добавить
                         </Button>
 
-                        <ListView Margin="37,52,37,10" ItemsSource="{Binding ShardGroups, Mode=TwoWay}" BorderThickness="0">
+                        <ListView Margin="37,52,37,10" ItemsSource="{Binding ShardGroups, Mode=TwoWay}"
+                                  BorderThickness="0">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <GroupBox Margin="8" Header="{Binding Title}">
@@ -124,8 +126,11 @@
                                                             </TextBlock>
                                                             <TextBox Margin="125,-4,83,0" Height="20"
                                                                      Text="{Binding ConnectionString, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                                                                     BorderBrush="{Binding ConnectionStringTextColor}"/>
-                                                            <Button HorizontalAlignment="Right" Width="75" Margin="0, -2, 0, 2" BorderThickness="0" Click="CheckConnectionStringButton_OnClick" Content="{Binding ConnectionStringCheckButtonText}"></Button>
+                                                                     BorderBrush="{Binding ConnectionStringTextColor}" />
+                                                            <Button HorizontalAlignment="Right" Width="75"
+                                                                    Margin="0, -2, 0, 2" BorderThickness="0"
+                                                                    Click="CheckConnectionStringButton_OnClick"
+                                                                    Content="{Binding ConnectionStringCheckButtonText}" />
                                                         </Grid>
                                                     </DataTemplate>
                                                 </ListView.ItemTemplate>
@@ -198,11 +203,11 @@
                                     <GridViewColumn Header="Название" Width="150">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBox Text="{Binding}"></TextBox>
+                                                <TextBox Text="{Binding}" />
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
-                                    <GridViewColumn Header="Тип" Width="150" DisplayMemberBinding="{Binding Type}"/>
+                                    <GridViewColumn Header="Тип" Width="150" DisplayMemberBinding="{Binding Type}" />
                                 </GridView>
                             </ListView.View>
                         </ListView>
@@ -221,16 +226,18 @@
             <!--Таб тестирования ""-->
             <TabItem x:Name="TestTab" Header="TestTab">
                 <TabItem.DataContext>
-                    <config:DbTestModel/>
+                    <testModel:DbTestModel />
                 </TabItem.DataContext>
                 <Grid>
                     <GroupBox Header="Тесты" Margin="10,0,0,10" HorizontalAlignment="Left" Width="200">
-                        <ListView Margin="0,10,-2,3" ItemsSource="{Binding Tests}" BorderThickness="0" SelectionChanged="TestsView_OnSelectionChanged">
+                        <ListView Margin="0,10,-2,3" ItemsSource="{Binding Tests}" BorderThickness="0"
+                                  SelectionChanged="TestsView_OnSelectionChanged">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <Grid Height="36" Width="162" Margin="8">
                                         <TextBlock Text="{Binding Name}" Margin="0,0,51,20" />
-                                        <TextBlock Text="{Binding StateString}" Margin="0,20,51,0" Foreground="#FFA0A0A0"
+                                        <TextBlock Text="{Binding StateString}" Margin="0,20,51,0"
+                                                   Foreground="#FFA0A0A0"
                                                    FontSize="9" />
                                         <wpf:LoadingIndicator Style="{DynamicResource LoadingIndicatorRingStyleKey}"
                                                               Visibility="{Binding LoadIndicatorVisibility}"
@@ -260,7 +267,7 @@
                             <!-- </ListView.ItemContainerStyle> -->
                         </ListView>
                     </GroupBox>
-                    <GroupBox x:Name="TestTabGraphicBox"  Header="Подробно" Margin="215,0,10,10">
+                    <GroupBox x:Name="TestTabGraphicBox" Header="Подробно" Margin="215,0,10,10">
                         <Grid>
                             <oxy:PlotView x:Name="TestGraphic"  Model="{Binding SelectedTest.GraphicModel}" Margin="0,10,22,0" Height="327" VerticalAlignment="Top" />
                         </Grid>

@@ -2,12 +2,12 @@
 {
     public class DataRow
     {
-        public DataSet DataSet { get; private set; }
+        public DataColumn[] Columns { get; set; }
         public object[] Values { get; private set; }
 
-        internal DataRow(DataSet dataSet, object[] values)
+        internal DataRow(object[] values, DataColumn[] columns)
         {
-            this.DataSet = dataSet;
+            this.Columns = columns;
             this.Values = values;
         }
 

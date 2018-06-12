@@ -85,10 +85,11 @@
     <Compile Include="Models\Config\DbDataModel.cs" />
     <Compile Include="Models\Config\DbItemsModel.cs" />
     <Compile Include="Models\Config\DbShardGroupsModel.cs" />
-    <Compile Include="Models\Config\DbTestModel.cs" />
-    <Compile Include="Models\Config\TestModel\BarGraphicModel.cs" />
-    <Compile Include="Models\Config\TestModel\IGraphicModel.cs" />
-    <Compile Include="Models\Config\TestModel\LineGraphicModel.cs" />
+    <Compile Include="Models\TestModel\DbTestItem.cs" />
+    <Compile Include="Models\TestModel\DbTestModel.cs" />
+    <Compile Include="Models\TestModel\Graphics\BarGraphicModel.cs" />
+    <Compile Include="Models\TestModel\Graphics\IGraphicModel.cs" />
+    <Compile Include="Models\TestModel\Graphics\LineGraphicModel.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
