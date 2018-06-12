@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using DBTesterUI.Models.TestModel;
 
 namespace DBTesterUI.Windows
 {
@@ -7,8 +8,7 @@ namespace DBTesterUI.Windows
         private void TestsView_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if(TestModel == null) return;
-            var index = ((ListView) sender).SelectedIndex;
-            TestModel.SelectedTest = TestModel?.Tests[index];
+            TestModel.SelectedTest = ((ListView)sender).SelectedItem as DbTestItem;
         }
     }
 }
