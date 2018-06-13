@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
+using DBTesterLib.Data;
 using DBTesterLib.Db;
 
 namespace DBTesterLib.Tester
@@ -39,6 +42,13 @@ namespace DBTesterLib.Tester
         /// Объект для работы с бд.
         /// </summary>
         public IDb Database { get; protected set; }
+
+        /// <summary>
+        /// Данные для тестирования
+        /// </summary>
+        public IEnumerable<DataSet> DataSets { get; set; }
+
+        public int ThreadsCount { get; set; }
 
         /// <summary>
         /// Состояние тестера.
@@ -95,11 +105,13 @@ namespace DBTesterLib.Tester
 
 
 
-        protected BaseTester()
+        protected BaseTester(IEnumerable<DataSet> dataSets)
         {
             Speed = 0;
-            this.ProgressValue = 0;
-            this.State = TesterState.Stop;
+            ProgressValue = 0;
+            ThreadsCount = 10;
+            State = TesterState.Stop;
+            DataSets = dataSets;
         }
 
         /// <summary>
@@ -113,7 +125,7 @@ namespace DBTesterLib.Tester
         /// Метод в котором необходимо выполнять действия,
         /// производительность которых будет измеряться
         /// </summary>
-        protected abstract void Test();
+        protected abstract void Test(DataSet dataSet);
 
         /// <summary>
         /// Метод для запуска тестирования
@@ -121,16 +133,46 @@ namespace DBTesterLib.Tester
         public void Start()
         {
             if (State != TesterState.Stop) return;
+            OnStart();
 
-            new Thread(() =>
+            object 
+                lockObj1 = new object(),
+                lockObj2 = new object();
+
+            int dataSetsLength = DataSets.Count(),
+                nextDataSetIndex = 0,
+                completedDataSets = 0;
+
+            for (var ti = 0; ti < ThreadsCount; ti++)
             {
-                this.OnStart();
-                Test();
-            }).Start();
+                new Thread(() =>
+                {
+                    while (true)
+                    {
+                        DataSet dataSet;
+                        lock (lockObj1)
+                        {
+                            if (nextDataSetIndex >= dataSetsLength)
+                            {
+                                break;
+                            }
+                            dataSet = DataSets.ElementAt(nextDataSetIndex++);
+                        }
+
+                        var startTime = DateTime.Now;
+                        Test(dataSet);
+                        var elapsedTime = DateTime.Now - startTime;
+                        var timeForOneRow = elapsedTime.TotalMilliseconds / dataSet.Rows.Count;
+
+                        OnSpeed(timeForOneRow);
+                        OnProgress((double)++completedDataSets / dataSetsLength);
+                    }
+                }).Start();
+            }
         }
 
 
-        protected void OnSpeed(double speed)
+        private void OnSpeed(double speed)
         {
             Speed = speed;
             if (double.IsNaN(_minSpeed) || speed < _minSpeed)
@@ -149,6 +191,11 @@ namespace DBTesterLib.Tester
             _speedCount++;
         }
 
+        private void OnSpeed(int rowsCompleted)
+        {
+
+        }
+
         private void OnStart()
         {
             this._starTime = DateTime.Now;
@@ -165,7 +212,7 @@ namespace DBTesterLib.Tester
             this.Completed?.Invoke();
         }
 
-        protected void OnProgress(double progressValue)
+        private void OnProgress(double progressValue)
         {
             ProgressValue = progressValue;
             this.Progress?.Invoke();
