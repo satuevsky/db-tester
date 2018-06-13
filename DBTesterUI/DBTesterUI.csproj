@@ -85,7 +85,11 @@
     <Compile Include="Models\Config\DataModel\DbDataColumn.cs" />
     <Compile Include="Models\Config\DataModel\DbDataColumnValidationRule.cs" />
     <Compile Include="Models\Config\DataModel\DbDataModel.cs" />
-    <Compile Include="Models\Config\DbItemsModel.cs" />
+    <Compile Include="Models\Config\DbItemsModel\DbItem.cs" />
+    <Compile Include="Models\Config\DbItemsModel\DbItemsModel.cs" />
+    <Compile Include="Models\Config\ShardGroupsModel\ConnectionStringState.cs" />
+    <Compile Include="Models\Config\ShardGroupsModel\DbShardGroup.cs" />
+    <Compile Include="Models\Config\ShardGroupsModel\DbShardGroupItem.cs" />
     <Compile Include="Models\Config\ShardGroupsModel\DbShardGroupsModel.cs" />
     <Compile Include="Models\TestModel\DbTestItem.cs" />
     <Compile Include="Models\TestModel\DbTestModel.cs" />
