@@ -6,6 +6,7 @@ using DBTesterLib.Tester;
 using DBTesterUI.Annotations;
 using DBTesterUI.Models.Config;
 using DBTesterUI.Models.Config.DataModel;
+using DBTesterUI.Models.Config.ShardGroupsModel;
 
 namespace DBTesterUI.Models.TestModel
 {

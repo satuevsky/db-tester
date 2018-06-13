@@ -9,6 +9,7 @@
         xmlns:config="clr-namespace:DBTesterUI.Models.Config"
         xmlns:testModel="clr-namespace:DBTesterUI.Models.TestModel"
         xmlns:dataModel="clr-namespace:DBTesterUI.Models.Config.DataModel"
+        xmlns:shardGroupsModel="clr-namespace:DBTesterUI.Models.Config.ShardGroupsModel"
         mc:Ignorable="d"
         Title="Тестирование баз данных" Height="554" Width="800">
 
@@ -72,7 +73,7 @@
             <!--Таб "Определние групп баз данных по количеству машин"-->
             <TabItem x:Name="DefineShardsTab" Header="DefineShardsTab">
                 <TabItem.DataContext>
-                    <config:DbShardGroupsModel />
+                    <shardGroupsModel:DbShardGroupsModel />
                 </TabItem.DataContext>
                 <Grid>
                     <Grid Margin="0,0,0,40" Background="#FFF7F7F7" HorizontalAlignment="Left" Width="250">

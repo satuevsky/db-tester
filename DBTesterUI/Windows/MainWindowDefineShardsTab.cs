@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using DBTesterUI.Models.Config;
+using DBTesterUI.Models.Config.ShardGroupsModel;
 
 namespace DBTesterUI.Windows
 {

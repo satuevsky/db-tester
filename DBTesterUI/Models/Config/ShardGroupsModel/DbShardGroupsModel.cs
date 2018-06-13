@@ -8,7 +8,7 @@ using DBTesterLib.Data;
 using DBTesterLib.Db;
 using DBTesterUI.Annotations;
 
-namespace DBTesterUI.Models.Config
+namespace DBTesterUI.Models.Config.ShardGroupsModel
 {
     enum ConnectionStringState
     {

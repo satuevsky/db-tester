@@ -86,7 +86,7 @@
     <Compile Include="Models\Config\DataModel\DbDataColumnValidationRule.cs" />
     <Compile Include="Models\Config\DataModel\DbDataModel.cs" />
     <Compile Include="Models\Config\DbItemsModel.cs" />
-    <Compile Include="Models\Config\DbShardGroupsModel.cs" />
+    <Compile Include="Models\Config\ShardGroupsModel\DbShardGroupsModel.cs" />
     <Compile Include="Models\TestModel\DbTestItem.cs" />
     <Compile Include="Models\TestModel\DbTestModel.cs" />
     <Compile Include="Models\TestModel\Graphics\BarGraphicModel.cs" />
