@@ -50,7 +50,7 @@ namespace DBTesterUI.Windows
 
         private void Next2Button_OnClick(object sender, RoutedEventArgs e)
         {
-            ShowTestTab();
+            ShowDefineDataTab();
         }
     }
 }

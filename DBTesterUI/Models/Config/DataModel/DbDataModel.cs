@@ -1,35 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Controls;
 using DBTesterLib.Data;
 
-namespace DBTesterUI.Models.Config
+namespace DBTesterUI.Models.Config.DataModel
 {
-    class DbDataColumn
-    {
-        public string Name { get; set; }
-
-        public DataType Type { get; set; }
-    }
-
     class DbDataModel
     {
         public int RowsCount { get; set; }
 
-        public List<DbDataColumn> Columns { get; set; }
+        public ObservableCollection<DbDataColumn> Columns { get; set; }
+
+        public ValidationRule ColumnValidationRule => new DbDataColumnValidationRule();
 
         public int ButchSize { get; set; }
+
 
         public DbDataModel()
         {
             RowsCount = 50000;
             ButchSize = 500;
 
-            Columns = new List<DbDataColumn>
+            Columns = new ObservableCollection<DbDataColumn>
             {
-                new DbDataColumn {Name = "_id", Type = DataType.Number},
+                new DbDataColumn {Name = "_id", Type = DataType.Number, IsPrimary = true},
                 new DbDataColumn {Name = "name", Type = DataType.String},
                 new DbDataColumn {Name = "bdate", Type = DataType.Date},
                 new DbDataColumn {Name = "age", Type = DataType.Number},
@@ -38,6 +35,8 @@ namespace DBTesterUI.Models.Config
 
         public List<DataSet> CreateDataSet()
         {
+            Columns = new ObservableCollection<DbDataColumn>(Columns.Where(column => column.IsValid()));
+
             var result = new List<DataSet>((int)Math.Ceiling((decimal)RowsCount / ButchSize));
             var dataSet = new DataSet(
                 Columns.ToDictionary(column => column.Name, column => column.Type)

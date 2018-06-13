@@ -82,7 +82,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Graphics\Models\TestModel.cs" />
-    <Compile Include="Models\Config\DbDataModel.cs" />
+    <Compile Include="Models\Config\DataModel\DbDataColumn.cs" />
+    <Compile Include="Models\Config\DataModel\DbDataColumnValidationRule.cs" />
+    <Compile Include="Models\Config\DataModel\DbDataModel.cs" />
     <Compile Include="Models\Config\DbItemsModel.cs" />
     <Compile Include="Models\Config\DbShardGroupsModel.cs" />
     <Compile Include="Models\TestModel\DbTestItem.cs" />
@@ -99,6 +101,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Windows\MainWindowChooseDbTab.cs" />
+    <Compile Include="Windows\MainWindowDataTab.cs" />
     <Compile Include="Windows\MainWindowDefineShardsTab.cs" />
     <Compile Include="Windows\MainWindowNavigation.cs" />
     <Compile Include="Windows\MainWindowTestsTab.cs" />

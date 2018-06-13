@@ -5,6 +5,7 @@ using System.Windows;
 using DBTesterLib.Tester;
 using DBTesterUI.Annotations;
 using DBTesterUI.Models.Config;
+using DBTesterUI.Models.Config.DataModel;
 
 namespace DBTesterUI.Models.TestModel
 {
