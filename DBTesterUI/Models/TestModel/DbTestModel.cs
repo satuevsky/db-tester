@@ -62,14 +62,14 @@ namespace DBTesterUI.Models.TestModel
                 {
                     Name = "Выборка данных"
                 },
-//                new DbTestItem(new InsertionTester(data), shardGroupsModel.ShardGroups, data[0].Columns)
-//                {
-//                    Name = "Изменение данных"
-//                },
-//                new DbTestItem(new InsertionTester(data), shardGroupsModel.ShardGroups, data[0].Columns)
-//                {
-//                    Name = "Удаление данных"
-//                }
+                new DbTestItem(new UpdateTester(data), shardGroupsModel.ShardGroups, data[0].Columns)
+                {
+                    Name = "Изменение данных"
+                },
+                new DbTestItem(new DeleteTester(data), shardGroupsModel.ShardGroups, data[0].Columns)
+                {
+                    Name = "Удаление данных"
+                }
             };
 
             Tests.ForEach(item => { item.Progress += OnProgress; });

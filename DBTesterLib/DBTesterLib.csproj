@@ -72,9 +72,13 @@
     <Compile Include="src\Db\MySqlDb.cs" />
     <Compile Include="src\Db\MongoDb.cs" />
     <Compile Include="src\Db\MongoDbSimulator.cs" />
+    <Compile Include="src\Db\PrimaryKeysRange.cs" />
     <Compile Include="src\Tester\BaseTester.cs" />
+    <Compile Include="src\Tester\DeleteTester.cs" />
+    <Compile Include="src\Tester\UpdateTester.cs" />
     <Compile Include="src\Tester\SelectionTester.cs" />
     <Compile Include="src\Tester\InsertionTester.cs" />
+    <Compile Include="src\Tester\TesterState.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

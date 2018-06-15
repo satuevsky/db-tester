@@ -28,13 +28,13 @@ namespace DBTesterLib.Db
 
         public bool CheckConnectionString(string connectionString)
         {
-            Thread.Sleep(500);
+            Thread.Sleep(100);
             return true;
         }
 
         public DataSet Select(PrimaryKeysRange keysRange)
         {
-            Thread.Sleep(1);
+            Thread.Sleep(_rand.Next(1, _timeout));
             return new DataSet(new DataColumn[0]);
         }
 
@@ -45,12 +45,12 @@ namespace DBTesterLib.Db
 
         public void Update(PrimaryKeysRange keysRange, DataRow row)
         {
-            throw new NotImplementedException();
+            Thread.Sleep(_rand.Next(1, _timeout));
         }
 
         public void Delete(PrimaryKeysRange keysRange)
         {
-            throw new NotImplementedException();
+            Thread.Sleep(_rand.Next(1, _timeout));
         }
     }
 }
