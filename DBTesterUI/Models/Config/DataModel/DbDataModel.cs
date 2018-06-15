@@ -10,15 +10,21 @@ namespace DBTesterUI.Models.Config.DataModel
 {
     class DbDataModel
     {
+        /// <summary>
+        /// Количество строк тестовых данных
+        /// </summary>
         public int RowsCount { get; set; }
 
+        /// <summary>
+        /// Коллекция стоблцов тестовых данных
+        /// </summary>
         public ObservableCollection<DbDataColumn> Columns { get; set; }
-
-        public ValidationRule ColumnValidationRule => new DbDataColumnValidationRule();
-
+        
         public int ButchSize { get; set; }
 
-
+        /// <summary>
+        /// Конструктор модели
+        /// </summary>
         public DbDataModel()
         {
             RowsCount = 50000;
@@ -33,6 +39,10 @@ namespace DBTesterUI.Models.Config.DataModel
             };
         }
 
+        /// <summary>
+        /// Метод для генерации набора данных на основе текущей модели
+        /// </summary>
+        /// <returns></returns>
         public List<DataSet> CreateDataSet()
         {
             Columns = new ObservableCollection<DbDataColumn>(Columns.Where(column => column.IsValid()));

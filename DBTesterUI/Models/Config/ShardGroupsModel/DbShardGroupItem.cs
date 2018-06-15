@@ -11,11 +11,21 @@ namespace DBTesterUI.Models.Config.ShardGroupsModel
     {
         private IDb _initedDb;
 
+        /// <summary>
+        /// Объект для работы с бд.
+        /// </summary>
         public IDb Db { get; set; }
+
+        /// <summary>
+        /// Строка подключения
+        /// </summary>
         public string ConnectionString { get; set; }
 
         private ConnectionStringState _connectionStringState = ConnectionStringState.NotSet;
 
+        /// <summary>
+        /// Состояние строки подключения
+        /// </summary>
         public ConnectionStringState ConnectionStringState
         {
             get => _connectionStringState;
@@ -27,6 +37,9 @@ namespace DBTesterUI.Models.Config.ShardGroupsModel
             }
         }
 
+        /// <summary>
+        /// Цвет строки подключения
+        /// </summary>
         public Brush ConnectionStringTextColor
         {
             get
@@ -45,6 +58,9 @@ namespace DBTesterUI.Models.Config.ShardGroupsModel
             }
         }
 
+        /// <summary>
+        /// Текст кнопки для проверки строки подключения.
+        /// </summary>
         public string ConnectionStringCheckButtonText
         {
             get
@@ -63,12 +79,21 @@ namespace DBTesterUI.Models.Config.ShardGroupsModel
             }
         }
 
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="db"></param>
         public DbShardGroupItem(IDb db)
         {
             Db = db;
             ConnectionStringState = ConnectionStringState.NotSet;
         }
 
+        /// <summary>
+        /// Метод для инициализации соедния к бд.
+        /// </summary>
+        /// <param name="columns"></param>
+        /// <returns></returns>
         public IDb InitDb(DataColumn[] columns)
         {
             return _initedDb ?? (_initedDb = Db.Create(ConnectionString, columns));

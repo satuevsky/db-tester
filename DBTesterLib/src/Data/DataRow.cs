@@ -1,4 +1,8 @@
-﻿namespace DBTesterLib.Data
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace DBTesterLib.Data
 {
     public class DataRow
     {

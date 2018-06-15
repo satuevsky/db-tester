@@ -9,16 +9,6 @@ using DBTesterLib.Db;
 namespace DBTesterLib.Tester
 {
     /// <summary>
-    /// Состояния тестера
-    /// </summary>
-    public enum TesterState
-    {
-        Stop,
-        InProgress,
-        Complete,
-    }
-
-    /// <summary>
     /// Базовый абстрактный класс для тестирования производительности баз данных
     /// </summary>
     public abstract class BaseTester
@@ -44,10 +34,13 @@ namespace DBTesterLib.Tester
         public IDb Database { get; protected set; }
 
         /// <summary>
-        /// Данные для тестирования
+        /// Данные для тестирования.
         /// </summary>
         public IEnumerable<DataSet> DataSets { get; set; }
 
+        /// <summary>
+        /// Количество потоков тестирования.
+        /// </summary>
         public int ThreadsCount { get; set; }
 
         /// <summary>
@@ -104,7 +97,10 @@ namespace DBTesterLib.Tester
 
 
 
-
+        /// <summary>
+        /// Конструктор класса
+        /// </summary>
+        /// <param name="dataSets">Данные для тестирования</param>
         protected BaseTester(IEnumerable<DataSet> dataSets)
         {
             Speed = 0;
@@ -171,7 +167,10 @@ namespace DBTesterLib.Tester
             }
         }
 
-
+        /// <summary>
+        /// Метод для обновления состояния скорости выполения теста.
+        /// </summary>
+        /// <param name="speed"></param>
         private void OnSpeed(double speed)
         {
             Speed = speed;
@@ -191,11 +190,9 @@ namespace DBTesterLib.Tester
             _speedCount++;
         }
 
-        private void OnSpeed(int rowsCompleted)
-        {
-
-        }
-
+        /// <summary>
+        /// Метод для вызова события Start
+        /// </summary>
         private void OnStart()
         {
             this._starTime = DateTime.Now;
@@ -203,6 +200,9 @@ namespace DBTesterLib.Tester
             this.Started?.Invoke();
         }
 
+        /// <summary>
+        /// Метод для вызова события Complete
+        /// </summary>
         private void OnComplete()
         {
             if(State == TesterState.Complete) return;
@@ -212,6 +212,9 @@ namespace DBTesterLib.Tester
             this.Completed?.Invoke();
         }
 
+        /// <summary>
+        /// Метод для вызова события Progress
+        /// </summary>
         private void OnProgress(double progressValue)
         {
             ProgressValue = progressValue;

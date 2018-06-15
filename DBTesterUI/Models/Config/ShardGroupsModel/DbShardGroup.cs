@@ -10,6 +10,9 @@ namespace DBTesterUI.Models.Config.ShardGroupsModel
     {
         private int _machinesCount = 1;
 
+        /// <summary>
+        /// Количество машин, на которых развернуты бд.
+        /// </summary>
         public int MachinesCount
         {
             get => _machinesCount;
@@ -20,10 +23,17 @@ namespace DBTesterUI.Models.Config.ShardGroupsModel
             }
         }
 
+        /// <summary>
+        /// Коллекция баз данных, которые входят в эту группу
+        /// </summary>
         public List<DbShardGroupItem> ShardGroupItems { get; set; }
 
         public string Title => "Базы данных с количеством машин: " + MachinesCount;
 
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="dbs"></param>
         public DbShardGroup(List<IDb> dbs)
         {
             ShardGroupItems = new List<DbShardGroupItem>();
