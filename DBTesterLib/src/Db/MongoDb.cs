@@ -111,12 +111,29 @@ namespace DBTesterLib.Db
 
         public void Update(PrimaryKeysRange keysRange, DataRow row)
         {
-            throw new NotImplementedException();
+            var filter = Builders<BsonDocument>.Filter.Gte("_id", keysRange.From) &
+                         Builders<BsonDocument>.Filter.Lte("_id", keysRange.To);
+
+            var updates = new UpdateDefinition<BsonDocument>[row.Columns.Length - 1];
+
+            for (var i = 0; i < row.Columns.Length; i++)
+            {
+                var column = row.Columns[i];
+                if (column.Name != "_id")
+                {
+                    updates[i] = Builders<BsonDocument>.Update.Set(column.Name, row.Values[i]);
+                }
+            }
+
+            _collection.UpdateMany(filter, Builders<BsonDocument>.Update.Combine(updates));
         }
 
         public void Delete(PrimaryKeysRange keysRange)
         {
-            throw new NotImplementedException();
+            var filter = Builders<BsonDocument>.Filter.Gte("_id", keysRange.From) &
+                         Builders<BsonDocument>.Filter.Lte("_id", keysRange.To);
+
+            _collection.DeleteMany(filter);
         }
     }
 }
