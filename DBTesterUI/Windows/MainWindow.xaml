@@ -343,15 +343,13 @@
                                     VerticalGridLinesBrush="#F0F0F0">
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Header="База данных" Binding="{Binding Name, Mode=OneWay}"
-                                                            Width="150" />
+                                                            Width="*" />
+                                        <DataGridTextColumn Header="Время"
+                                                            Binding="{Binding Duration, Mode=OneWay}" Width="80" />
                                         <DataGridTextColumn Header="Скорость"
-                                                            Binding="{Binding RowsInSecond, Mode=OneWay}" Width="80" />
-                                        <DataGridTextColumn Header="Средн."
-                                                            Binding="{Binding RowsInSecondAvg, Mode=OneWay}" Width="80" />
-                                        <DataGridTextColumn Header="Мин."
-                                                            Binding="{Binding RowsInSecondMin, Mode=OneWay}" Width="80" />
-                                        <DataGridTextColumn Header="Макс."
-                                                            Binding="{Binding RowsInSecondMax, Mode=OneWay}" Width="80" />
+                                                            Binding="{Binding RowsInSecond, Mode=OneWay}" Width="100" />
+                                        <DataGridTextColumn Header="Средняя скорость"
+                                                            Binding="{Binding RowsInSecondAvg, Mode=OneWay}" Width="120" />
                                     </DataGrid.Columns>
                                 </DataGrid>
                             </Grid>

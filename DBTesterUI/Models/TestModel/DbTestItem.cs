@@ -22,15 +22,30 @@ namespace DBTesterUI.Models.TestModel
 
         public string Name => "[" + _testItem.DbShardGroups[_groupIndex].MachinesCount + "]" +_testItem.DbShardGroups[_groupIndex].ShardGroupItems[_dbIndex].Db.Name;
 
+        public string Duration
+        {
+            get
+            {
+                var tester = _testItem.Testers[_groupIndex, _dbIndex];
+                double duration = 0;
+                if (tester != null && tester.Duration.Seconds > 0)
+                {
+                    duration = tester.Duration.Seconds;
+                }
+
+                return duration.ToString("## 'сек'");
+            }
+        }
+
         public string RowsInSecond
         {
             get
             {
                 var tester = _testItem.Testers[_groupIndex, _dbIndex];
                 double rowsInSecond = 0;
-                if (tester != null)
+                if (tester != null && tester.Speed > 0)
                 {
-                    rowsInSecond = 1000 / tester.Speed;
+                    rowsInSecond = tester.Speed;
                 }
 
                 return rowsInSecond.ToString("## 'зап/сек'");
@@ -43,39 +58,9 @@ namespace DBTesterUI.Models.TestModel
             {
                 var tester = _testItem.Testers[_groupIndex, _dbIndex];
                 double rowsInSecond = 0;
-                if (tester != null)
+                if (tester != null && tester.AvgSpeed > 0)
                 {
-                    rowsInSecond = 1000 / tester.AvgSpeed;
-                }
-
-                return rowsInSecond.ToString("## 'зап/сек'");
-            }
-        }
-
-        public string RowsInSecondMin
-        {
-            get
-            {
-                var tester = _testItem.Testers[_groupIndex, _dbIndex];
-                double rowsInSecond = 0;
-                if (tester != null)
-                {
-                    rowsInSecond = 1000 / tester.MaxSpeed;
-                }
-
-                return rowsInSecond.ToString("## 'зап/сек'");
-            }
-        }
-
-        public string RowsInSecondMax
-        {
-            get
-            {
-                var tester = _testItem.Testers[_groupIndex, _dbIndex];
-                double rowsInSecond = 0;
-                if (tester != null)
-                {
-                    rowsInSecond = 1000 / tester.MinSpeed;
+                    rowsInSecond = tester.AvgSpeed;
                 }
 
                 return rowsInSecond.ToString("## 'зап/сек'");
@@ -95,8 +80,7 @@ namespace DBTesterUI.Models.TestModel
             {
                 OnPropertyChanged(nameof(RowsInSecond));
                 OnPropertyChanged(nameof(RowsInSecondAvg));
-                OnPropertyChanged(nameof(RowsInSecondMax));
-                OnPropertyChanged(nameof(RowsInSecondMin));
+                OnPropertyChanged(nameof(Duration));
             };
 
             t.Start();
