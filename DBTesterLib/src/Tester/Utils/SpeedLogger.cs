@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DBTesterLib.Tester.Utils
 {
@@ -8,22 +9,19 @@ namespace DBTesterLib.Tester.Utils
         /// <summary>
         /// Текущая скорость
         /// </summary>
-        public double Current { get; private set; }
-
-        /// <summary>
-        /// Минимальная скорость
-        /// </summary>
-        public double Min { get; private set; }
-
-        /// <summary>
-        /// Максимальная скорость
-        /// </summary>
-        public double Max { get; private set; }
+        public double Current
+        {
+            get
+            {
+                if (!_started) return 0;
+                return Approximate(_prevSpeed, CurrentIntervalSpeed().Speed);
+            }
+        }
 
         /// <summary>
         /// Средняя скорость
         /// </summary>
-        public double Avg { get; private set; }
+        public double Avg => (_speedSum + Current) / (History.Count + 1);
 
         /// <summary>
         /// Промежуток времени в милисекундах, по которому измеряется скорость
@@ -34,10 +32,11 @@ namespace DBTesterLib.Tester.Utils
         /// История скоростей
         /// </summary>
         public List<IntervalSpeed> History { get; private set; }
-        
-        private IntervalSpeed _nextIntervalSpeed;
-        private bool _minInited;
+
+        private IntervalSpeed _currentIntervalSpeed;
         private double _speedSum;
+        private double _prevSpeed;
+        private bool _started;
 
         /// <summary>
         /// Конструктор измерителя скорости
@@ -55,44 +54,71 @@ namespace DBTesterLib.Tester.Utils
         /// <param name="count">Количество единиц скорости</param>
         public void Log(double count)
         {
-            if (_nextIntervalSpeed == null)
-            {
-                _nextIntervalSpeed = new IntervalSpeed(DateTime.Now, 0);
-            }
+            Start();
+            CurrentIntervalSpeed().Speed += count;
+        }
 
-            while (_nextIntervalSpeed.Time.AddMilliseconds(Interval) < DateTime.Now)
+        public void Start()
+        {
+            if (!_started)
             {
-                PushHistory();
+                _started = true;
+                _prevSpeed = 0;
+                NewInterval();
             }
+        }
 
-            _nextIntervalSpeed.Speed += count;
+        public void Stop()
+        {
+            if (_started)
+            {
+                _started = false;
+                PushInterval();
+            }
         }
 
 
-        private void PushHistory()
+        private void NewInterval()
         {
-            double currentSpeed = Current;
-            double nextSpeed = currentSpeed + (_nextIntervalSpeed.Speed - currentSpeed) * 0.5;
+            NewInterval(DateTime.Now);
+        }
 
-            _nextIntervalSpeed.Speed = nextSpeed;
-            History.Add(_nextIntervalSpeed);
-            _nextIntervalSpeed = new IntervalSpeed(_nextIntervalSpeed.Time.AddMilliseconds(Interval), 0);
+        private void NewInterval(DateTime time)
+        {
+            _currentIntervalSpeed = new IntervalSpeed(time, 0);
+        }
 
-            Current = nextSpeed;
+        private void PushInterval()
+        {
+            if (_currentIntervalSpeed == null) return;
 
-            if (!_minInited || Min > Current)
+            _prevSpeed = Approximate(_prevSpeed, _currentIntervalSpeed.Speed);
+            _speedSum += _prevSpeed;
+            History.Add(_currentIntervalSpeed);
+            _currentIntervalSpeed = null;
+        }
+
+        private IntervalSpeed CurrentIntervalSpeed()
+        {
+            if (!_started) return null;
+
+            DateTime
+                time = _currentIntervalSpeed.Time.AddMilliseconds(Interval),
+                now = DateTime.Now;
+
+            while (time < now)
             {
-                _minInited = true;
-                Min = Current;
+                PushInterval();
+                NewInterval(time);
+                time = time.AddMilliseconds(Interval);
             }
 
-            if (Max < Current)
-            {
-                Max = Current;
-            }
+            return _currentIntervalSpeed;
+        }
 
-            _speedSum += Current;
-            Avg = _speedSum / History.Count;
+        private double Approximate(double val1, double val2)
+        {
+            return val1 + (val2 - val1) * 0.8;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
@@ -173,6 +173,7 @@ namespace DBTesterLib.Tester
         {
             if (State == TesterState.Complete) return;
 
+            this._speedLogger.Stop();
             this._completeTime = DateTime.Now;
             this.State = TesterState.Complete;
             this.Completed?.Invoke();
