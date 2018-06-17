@@ -5,6 +5,7 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using DBTesterLib.Data;
 using DBTesterLib.Db;
+using DBTesterLib.Tester.Utils;
 
 namespace DBTesterLib.Tester
 {
@@ -19,10 +20,12 @@ namespace DBTesterLib.Tester
         /// Событие вызываемое при старте тестирования.
         /// </summary>
         public event EventDelegate Started;
+
         /// <summary>
         /// Событие вызываемое при изменении прогересса выполнения тестирования.
         /// </summary>
         public event EventDelegate Progress;
+
         /// <summary>
         /// Событие вызываемое при завершении тестирования.
         /// </summary>
@@ -69,33 +72,16 @@ namespace DBTesterLib.Tester
         /// <summary>
         /// Текущее время в милисекундах, затрачиваемое на обработку одной записи
         /// </summary>
-        public double Speed { get; private set; }
+        public double Speed => _speedLogger.Current;
 
         /// <summary>
         /// Среднее время в милисекундах, затрачиваемое на обработку одной записи
         /// </summary>
-        public double AvgSpeed => _speedCount == 0 ? 0 : _speedSum / _speedCount;
-
-
-        /// <summary>
-        /// Минимальное время в милисекундах, затрачиваемое на обработку одной записи
-        /// </summary>
-        public double MinSpeed => double.IsNaN(_minSpeed) ? 0 : _minSpeed;
-
-        /// <summary>
-        /// Максимальное время в милисекундах, затрачиваемое на обработку одной записи
-        /// </summary>
-        public double MaxSpeed => double.IsNaN(_maxSpeed) ? 0 : _maxSpeed;
+        public double AvgSpeed => _speedLogger.Avg;
 
         private DateTime _starTime;
         private DateTime _completeTime;
-
-        private double _minSpeed = Double.NaN;
-        private double _maxSpeed = Double.NaN;
-        private double _speedSum = 0;
-        private int _speedCount = 0;
-
-
+        private SpeedLogger _speedLogger;
 
         /// <summary>
         /// Конструктор класса
@@ -103,11 +89,11 @@ namespace DBTesterLib.Tester
         /// <param name="dataSets">Данные для тестирования</param>
         protected BaseTester(IEnumerable<DataSet> dataSets)
         {
-            Speed = 0;
             ProgressValue = 0;
-            ThreadsCount = 10;
+            ThreadsCount = 100;
             State = TesterState.Stop;
             DataSets = dataSets;
+            _speedLogger = new SpeedLogger(1000);
         }
 
         /// <summary>
@@ -131,7 +117,7 @@ namespace DBTesterLib.Tester
             if (State != TesterState.Stop) return;
             OnStart();
 
-            object 
+            object
                 lockObj1 = new object(),
                 lockObj2 = new object();
 
@@ -152,42 +138,22 @@ namespace DBTesterLib.Tester
                             {
                                 break;
                             }
+
                             dataSet = DataSets.ElementAt(nextDataSetIndex++);
                         }
 
-                        var startTime = DateTime.Now;
                         Test(dataSet);
-                        var elapsedTime = DateTime.Now - startTime;
-                        var timeForOneRow = elapsedTime.TotalMilliseconds / dataSet.Rows.Count;
+                        _speedLogger.Log(dataSet.Rows.Count);
 
-                        OnSpeed(timeForOneRow);
-                        OnProgress((double)++completedDataSets / dataSetsLength);
+                        lock (lockObj2)
+                        {
+                            ++completedDataSets;
+                        }
+
+                        OnProgress((double) completedDataSets / dataSetsLength);
                     }
                 }).Start();
             }
-        }
-
-        /// <summary>
-        /// Метод для обновления состояния скорости выполения теста.
-        /// </summary>
-        /// <param name="speed"></param>
-        private void OnSpeed(double speed)
-        {
-            Speed = speed;
-            if (double.IsNaN(_minSpeed) || speed < _minSpeed)
-            {
-                if (speed == 0)
-                {
-
-                }
-                _minSpeed = speed;
-            }
-            if (double.IsNaN(_maxSpeed) || speed > _maxSpeed)
-            {
-                _maxSpeed = speed;
-            }
-            _speedSum += speed;
-            _speedCount++;
         }
 
         /// <summary>
@@ -205,7 +171,7 @@ namespace DBTesterLib.Tester
         /// </summary>
         private void OnComplete()
         {
-            if(State == TesterState.Complete) return;
+            if (State == TesterState.Complete) return;
 
             this._completeTime = DateTime.Now;
             this.State = TesterState.Complete;

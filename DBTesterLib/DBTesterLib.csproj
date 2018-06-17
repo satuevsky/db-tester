@@ -79,6 +79,8 @@
     <Compile Include="src\Tester\SelectionTester.cs" />
     <Compile Include="src\Tester\InsertionTester.cs" />
     <Compile Include="src\Tester\TesterState.cs" />
+    <Compile Include="src\Tester\Utils\IntervalSpeed.cs" />
+    <Compile Include="src\Tester\Utils\SpeedLogger.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
