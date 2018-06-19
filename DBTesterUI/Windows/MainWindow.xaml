@@ -127,7 +127,9 @@
                                                                 <Run>:</Run>
                                                             </TextBlock>
                                                             <TextBox Margin="125,-4,83,0" Height="20"
+                                                                     MaxWidth="200"
                                                                      Text="{Binding ConnectionString, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                                                     TextWrapping="WrapWithOverflow"
                                                                      BorderBrush="{Binding ConnectionStringTextColor}" />
                                                             <Button HorizontalAlignment="Right" Width="75"
                                                                     Margin="0, -2, 0, 2" BorderThickness="0"

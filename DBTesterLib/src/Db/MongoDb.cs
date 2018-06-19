@@ -32,16 +32,8 @@ namespace DBTesterLib.Db
 
         public bool CheckConnectionString(string connectionString)
         {
-            //return connectionString.StartsWith("mongodb");
-            try
-            {
-                new MongoClient(connectionString).ListDatabases();
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            new MongoClient(connectionString).ListDatabases();
+            return true;
         }
 
         public DataSet Select(PrimaryKeysRange keysRange)
