@@ -48,8 +48,8 @@ namespace DBTesterLib.Db
             {
                 var query = $"SELECT * FROM {_dbName}.{_tableName} WHERE _id >= @from AND _id <= @to";
                 var cmd = new MySqlCommand(query, connection);
-                cmd.Parameters.Add("@from", MySqlDbType.Int64).Value = keysRange.From;
-                cmd.Parameters.Add("@to", MySqlDbType.Int64).Value = keysRange.To;
+                cmd.Parameters.Add("@from", MySqlDbType.Int32).Value = keysRange.From;
+                cmd.Parameters.Add("@to", MySqlDbType.Int32).Value = keysRange.To;
 
                 var dataSet = new DataSet(_columns);
                 var reader = cmd.ExecuteReader();
@@ -119,15 +119,15 @@ namespace DBTesterLib.Db
         {
             var updateQuery = $@"UPDATE {_dbName}.{_tableName} ";
             updateQuery +=
-                $"SET {string.Join(",", row.Columns.Select((column, i) => ToMySqlValue(row.Values[i], column)))} ";
+                $"SET {string.Join(",", row.Columns.Skip(1).Select((column, i) => $"{column.Name} = {ToMySqlValue(row.Values[i+1], column)}"))} ";
             updateQuery += $"WHERE {_columns[0].Name} >= @from AND {_columns[0].Name} <= @to;";
 
             using (var connection = (MySqlConnection) _connection.Clone())
             {
                 connection.Open();
                 var cmd = new MySqlCommand(updateQuery, connection);
-                cmd.Parameters.Add("@from", MySqlDbType.Int64).Value = keysRange.From;
-                cmd.Parameters.Add("@to", MySqlDbType.Int64).Value = keysRange.To;
+                cmd.Parameters.Add("@from", MySqlDbType.Int32).Value = keysRange.From;
+                cmd.Parameters.Add("@to", MySqlDbType.Int32).Value = keysRange.To;
                 cmd.ExecuteNonQuery();
             }
         }
@@ -140,8 +140,8 @@ namespace DBTesterLib.Db
             {
                 connection.Open();
                 var cmd = new MySqlCommand(deleteQuery, connection);
-                cmd.Parameters.Add("@from", MySqlDbType.Int64).Value = keysRange.From;
-                cmd.Parameters.Add("@to", MySqlDbType.Int64).Value = keysRange.To;
+                cmd.Parameters.Add("@from", MySqlDbType.Int32).Value = keysRange.From;
+                cmd.Parameters.Add("@to", MySqlDbType.Int32).Value = keysRange.To;
                 cmd.ExecuteNonQuery();
             }
         }
