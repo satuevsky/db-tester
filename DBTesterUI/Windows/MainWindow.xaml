@@ -274,6 +274,8 @@
                     </Grid>
 
                     <Grid Height="40" VerticalAlignment="Bottom" Background="#FFF7F7F7">
+                        <Button Content="Назад" Margin="0,8,99,0" VerticalAlignment="Top"
+                                Height="24" HorizontalAlignment="Right" Width="75" Click="Back3_OnClick" />
                         <Button Content="Далее" Margin="0,8,16,0" VerticalAlignment="Top"
                                 Height="24" HorizontalAlignment="Right" Width="75"
                                 Click="DataTabNextButton_OnClick" />

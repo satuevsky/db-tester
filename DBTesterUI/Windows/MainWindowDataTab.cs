@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using DBTesterUI.Models.Config.DataModel;
@@ -16,6 +17,11 @@ namespace DBTesterUI.Windows
         private void DataTabNextButton_OnClick(object sender, RoutedEventArgs e)
         {
             ShowTestTab();
+        }
+
+        private void Back3_OnClick(object sender, RoutedEventArgs e)
+        {
+            ShowDefineShardsTab();
         }
     }
 }
