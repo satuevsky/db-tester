@@ -1,5 +1,6 @@
 ﻿using System;
 using DBTesterLib.Data;
+using MySql.Data.MySqlClient;
 
 namespace DBTesterLib.Db
 {
@@ -19,6 +20,7 @@ namespace DBTesterLib.Db
 
         public bool CheckConnectionString(string connectionString)
         {
+            new MySqlConnection(connectionString).Open();
             return true;
         }
 
