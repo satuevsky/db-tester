@@ -1,5 +1,8 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Windows;
 using System.Windows.Media;
 using DBTesterLib.Data;
 using DBTesterLib.Db;
@@ -69,10 +72,10 @@ namespace DBTesterUI.Models.Config.ShardGroupsModel
                 {
                     case ConnectionStringState.Checking:
                         return "Проверка...";
-                    case ConnectionStringState.NotValid:
-                        return "Ошибка";
-                    case ConnectionStringState.Valid:
-                        return "Ок";
+//                    case ConnectionStringState.NotValid:
+//                        return "Ошибка";
+//                    case ConnectionStringState.Valid:
+//                        return "Ок";
                 }
 
                 return "Проверить";
@@ -87,6 +90,35 @@ namespace DBTesterUI.Models.Config.ShardGroupsModel
         {
             Db = db;
             ConnectionStringState = ConnectionStringState.NotSet;
+        }
+
+        public void CheckConnectionString()
+        {
+            if (ConnectionStringState == ConnectionStringState.Checking)
+            {
+                return;
+            }
+
+            ConnectionStringState = ConnectionStringState.Checking;
+
+            new Thread(() =>
+            {
+                try
+                {
+                    if (ConnectionString == null || ConnectionString.Trim() == "")
+                    {
+                        throw new Exception("Не указана строка подключения");
+                    }
+
+                    Db.CheckConnectionString(ConnectionString);
+                    ConnectionStringState = ConnectionStringState.Valid;
+                }
+                catch (Exception error)
+                {
+                    ConnectionStringState = ConnectionStringState.NotValid;
+                    MessageBox.Show(error.Message, "Не удалось подключиться к базе данных");
+                }
+            }).Start();
         }
 
         /// <summary>

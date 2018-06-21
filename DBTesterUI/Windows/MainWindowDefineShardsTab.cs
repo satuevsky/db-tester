@@ -23,28 +23,7 @@ namespace DBTesterUI.Windows
         {
             if ((sender as FrameworkElement)?.DataContext is DbShardGroupItem item)
             {
-                if (item.ConnectionStringState == ConnectionStringState.Checking || item.ConnectionString == null ||
-                    item.ConnectionString.Trim() == "")
-                {
-                    return;
-                }
-
-                item.ConnectionStringState = ConnectionStringState.Checking;
-
-                new Thread(() =>
-                {
-                    try
-                    {
-                        item.Db.CheckConnectionString(item.ConnectionString);
-                        item.ConnectionStringState = ConnectionStringState.Valid;
-                    }
-                    catch (Exception error)
-                    {
-                        item.ConnectionStringState = ConnectionStringState.NotValid;
-                        MessageBox.Show(error.Message, "Не удалось подключиться к базе данных");
-                    }
-
-                }).Start();
+                item.CheckConnectionString();
             }
         }
     }
