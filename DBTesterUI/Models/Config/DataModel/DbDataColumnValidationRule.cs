@@ -14,7 +14,7 @@ namespace DBTesterUI.Models.Config.DataModel
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
             var column = ((BindingGroup)value)?.Items[0] as DbDataColumn;
-            if (column == null || column.IsValid())
+            if (column == null || !column.IsValid())
             {
                 return new ValidationResult(false, null);
             }
