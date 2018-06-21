@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Timers;
 using DBTesterLib.Db;
 using OxyPlot;
 using OxyPlot.Axes;
@@ -71,6 +72,10 @@ namespace DBTesterUI.Models.TestModel.Graphics
             Axes.Add(DurationAxis);
 
             Update();
+
+            var timer = new Timer(100);
+            timer.Elapsed += (sender, args) => { Update(); };
+            timer.Start();
         }
 
         public void Update()
@@ -97,7 +102,7 @@ namespace DBTesterUI.Models.TestModel.Graphics
                     }
                 }
 
-                DurationAxis.Maximum = Math.Ceiling(maxDuration / 10) * 10;
+                DurationAxis.Maximum = Math.Ceiling(maxDuration / 5) * 5;
             }
         }
 
